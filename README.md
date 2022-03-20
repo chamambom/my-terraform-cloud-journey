@@ -1,14 +1,13 @@
-# Terraform Azure
+# My Terraform/Azure best practices
 
-## Purpose
+This repository contains terraform code snippets that i reuse from time to time when a client who wants their
+ cloud environment to be managed. 
 
 Test secure **Azure** provisioning using **Terraform**,
 utilising a [Remote Backend](https://www.terraform.io/docs/backends/types/azurerm.html) and a
 [Key Vault](https://azure.microsoft.com/en-gb/services/key-vault/) in Azure.
 
-> HashiCorp Terraform enables you to safely and predictably create, change, and improve infrastructure.
-> It is an open source tool that codifies APIs into declarative configuration files that can be shared amongst
-> team members, treated as code, edited, reviewed, and versioned.
+> Terraform enables you to safely and predictably create, change, and improve infrastructure.
 
 ## Preparation
 

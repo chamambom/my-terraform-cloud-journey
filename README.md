@@ -1,4 +1,4 @@
-# My Terraform/Azure best practices
+# My Terraform (AWS/Azure) best practices
 
 This repository contains terraform code snippets that i reuse from time to time when a client who wants their
  cloud environment to be managed. 
@@ -20,10 +20,9 @@ Before you can securely use Terraform with Azure, you will need to action the fo
 
 ### Configure Azure for Secure Terraform Access
 
-1. Clone this repo: `git clone git@github.com:adamrushuk/terraform-azure.git`
-1. Open `scripts\ConfigureAzureForSecureTerraformAccess.ps1` and update the `$adminUserDisplayName` variable to
-match your Admin User Display Name (eg. `Joe Bloggs`).
-1. Run `scripts\ConfigureAzureForSecureTerraformAccess.ps1`
+1. Open `azure-scripts\ConfigureAzureForSecureTerraformAccess.ps1` and update the `$adminUserDisplayName` variable to
+match your Admin User Display Name (eg. `Martin Chamambo`).
+1. Run `azure-scripts\ConfigureAzureForSecureTerraformAccess.ps1`
 
 The `ConfigureAzureForSecureTerraformAccess.ps1` script does the following:
 
@@ -45,7 +44,7 @@ The `ConfigureAzureForSecureTerraformAccess.ps1` script does the following:
 Now that Azure has been configured for secure Terraform access, the Key Vault secrets need to be loaded into
 environment variables, but only for the current PowerShell session.
 
-1. Run `scripts\LoadAzureTerraformSecretsToEnvVars.ps1`
+1. Run `azure-scripts\LoadAzureTerraformSecretsToEnvVars.ps1`
 
 ### Install Terraform
 
@@ -59,7 +58,7 @@ Either [download Terraform and add to your path](https://learn.hashicorp.com/ter
 
 Now that Terraform is installed, the secure remote backend can be utilised whilst provisioning an Azure Resource Group and a Virtual Network:
 
-1. Navigate to the `examples\remote-backend\` folder.
+1. Navigate to the `azure-examples\remote-backend\` folder.
 1. Open `main.tf` and ensure you have updated the `storage_account_name` variable in the `backend` code block, to the new Storage Account Name created by the `ConfigureAzureForSecureTerraformAccess.ps1` script.
 1. Initialise the Remote Backend and download plugins: `terraform init`
 1. Create an execution plan (see planned changes): `terraform plan`
@@ -73,6 +72,6 @@ To cleanup these Azure resources, you can also use Terraform to destroy what it 
 
 1. If this is a new PowerShell session, you will have to run `scripts\LoadAzureTerraformSecretsToEnvVars.ps1` again
 to reload the environment variables needed to Terraform to access Azure.
-1. Navigate to the `examples\remote-backend\` folder.
+1. Navigate to the `azure-examples\remote-backend\` folder.
 1. Remove the previously created Azure resources: `terraform destroy`
 1. Enter `yes` to confirm the planned actions.

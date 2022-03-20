@@ -38,7 +38,7 @@
 [CmdletBinding()]
 param (
     # This is used to assign yourself access to KeyVault
-    $adminUserDisplayName = '<Admin Username>',
+    $adminUserDisplayName = 'Martin Chamambo',
     $servicePrincipleName = 'terraform',
     $resourceGroupName = 'terraform-mgmt-rg',
     $location = 'uksouth',

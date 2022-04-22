@@ -19,35 +19,30 @@
         - ARM_ACCESS_KEY
 .EXAMPLE
     Connect-AzAccount -UseDeviceAuthentication
-    .\scripts\ConfigureAzureForSecureTerraformAccess.ps1 -adminUserDisplayName 'Adam Rush'
+    .\scripts\ConfigureAzureForSecureTerraformAccess.ps1 -adminUserDisplayName 'Martin Chamambo'
 
-    Displays device login link, then configures secure Terraform access for admin user "Adam Rush"
+    Displays device login link, then configures secure Terraform access for admin user "Martin Chamambo"
 .NOTES
     Assumptions:
     - Azure PowerShell module is installed: https://docs.microsoft.com/en-us/powershell/azure/install-az-ps
     - You are already logged into Azure before running this script (eg. Connect-AzAccount)
     - Use "Connect-AzAccount -UseDeviceAuthentication" if browser prompts don't work.
-
-    Author:  Adam Rush
-    Blog:    https://adamrushuk.github.io
-    GitHub:  https://github.com/adamrushuk
-    Twitter: @adamrushuk
 #>
 
 
 [CmdletBinding()]
 param (
     # This is used to assign yourself access to KeyVault
-    $adminUserDisplayName = 'Martin Chamambo',
-    $servicePrincipleName = 'terraform',
-    $resourceGroupName = 'terraform-mgmt-rg',
+    $adminUserDisplayName = 'iac',
+    $servicePrincipleName = 'terra-iac',
+    $resourceGroupName = 'terra-iac-rg',
     $location = 'uksouth',
     $storageAccountSku = 'Standard_LRS',
-    $storageContainerName = 'terraform-state',
+    $storageContainerName = 'terra-iac-state',
     # Prepend random prefix with A character, as some resources cannot start with a number
     $randomPrefix = ("a" + -join ((48..57) + (97..122) | Get-Random -Count 8 | ForEach-Object { [char]$_ })),
-    $vaultName = "$randomPrefix-terraform-kv",
-    $storageAccountName = "$($randomPrefix)terraform"
+    $vaultName = "$randomPrefix-terra-kv",
+    $storageAccountName = "$($randomPrefix)terra"
 )
 
 
@@ -113,8 +108,10 @@ Write-Host "SUCCESS!" -ForegroundColor 'Green'
 if (-not $terraformSP) {
     Write-HostPadded -Message "Creating a Terraform Service Principle: [$servicePrincipleName] ..." -NoNewline
     try {
-        $terraformSP = New-AzADServicePrincipal -DisplayName $servicePrincipleName -Role 'Contributor' -ErrorAction 'Stop'
-        $servicePrinciplePassword = [pscredential]::new($servicePrincipleName, $terraformSP.Secret).GetNetworkCredential().Password
+        $terraformSP = New-AzADServicePrincipal -DisplayName $servicePrincipleName -ErrorAction 'Stop'
+        $servicePrinciplePassword=$terraformSP.PasswordCredentials.SecretText
+
+        #$servicePrinciplePassword = [pscredential]::new($servicePrincipleName, $terraformSP.SecretText).GetNetworkCredential().Password
     } catch {
         Write-Host "ERROR!" -ForegroundColor 'Red'
         throw $_
@@ -124,7 +121,7 @@ if (-not $terraformSP) {
 } else {
     # Service Principle exists so renew password (as cannot retrieve current one-off password)
     $newSpCredential = $terraformSP | New-AzADSpCredential
-    $servicePrinciplePassword = [pscredential]::new($servicePrincipleName, $newSpCredential.Secret).GetNetworkCredential().Password
+    $servicePrinciplePassword=$newSpCredential.PasswordCredentials.SecretText
 }
 #endregion Service Principle
 
@@ -297,7 +294,7 @@ $storageAccessKey = $storageAccessKeys[0].Value # only need one of the keys
 
 $terraformLoginVars = @{
     'ARM-SUBSCRIPTION-ID' = $subscription.Id
-    'ARM-CLIENT-ID'       = $terraformSP.ApplicationId
+    'ARM-CLIENT-ID'       = $terraformSP.AppId
     'ARM-CLIENT-SECRET'   = $servicePrinciplePassword
     'ARM-TENANT-ID'       = $subscription.TenantId
     'ARM-ACCESS-KEY'      = $storageAccessKey
@@ -315,7 +312,7 @@ try {
         $AzKeyVaultSecretParams = @{
             VaultName   = $vaultName
             Name        = $terraformLoginVar.Key
-            SecretValue = (ConvertTo-SecureString -String $terraformLoginVar.Value -AsPlainText -Force)
+            SecretValue = (ConvertTo-SecureString  $terraformLoginVar.Value -AsPlainText -Force)
             ErrorAction = 'Stop'
             Verbose     = $VerbosePreference
         }

@@ -32,7 +32,7 @@
 [CmdletBinding()]
 param (
     # Find the Azure Key Vault that includes this string in it's name
-    $keyVaultSearchString = 'terraform-kv'
+    $keyVaultSearchString = 'terra-kv'
 )
 
 

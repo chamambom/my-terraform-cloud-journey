@@ -5,6 +5,7 @@
 provider "azurerm" {
   # Pin version as per best practice
   version = "=1.33.1"
+  features {}
 }
 terraform {
   required_version = ">= 0.12"

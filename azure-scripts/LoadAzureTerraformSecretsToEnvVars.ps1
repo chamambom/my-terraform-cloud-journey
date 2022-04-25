@@ -123,10 +123,10 @@ foreach ($secretName in $secretNames) {
             VaultName   = $tfKeyVault.VaultName
             ErrorAction = 'Stop'
         }
-        $tfSecret = Get-AzKeyVaultSecret @azKeyVaultSecretParams
+        $tfSecret = Get-AzKeyVaultSecret @azKeyVaultSecretParams -AsPlainText
 
         # Add secret to hashtable
-        $terraformEnvVars.$secretName = $tfSecret.SecretValueText
+        $terraformEnvVars.$secretName = $tfSecret
     } catch {
         Write-Error -Message "ERROR: $taskMessage." -ErrorAction 'Continue'
         throw $_

@@ -5,10 +5,7 @@
     Invokes Terraform with supplied command (default: apply), using auto approve (no prompts)
     Starts a timer to show Total Time Elapsed.
 .NOTES
-    Author:  Adam Rush
-    Blog:    https://adamrushuk.github.io
-    GitHub:  https://github.com/adamrushuk
-    Twitter: @adamrushuk
+    
 #>
 
 [CmdletBinding()]

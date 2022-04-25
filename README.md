@@ -1,13 +1,41 @@
 # My Terraform (AWS/Azure) best practices
 
-This repository contains terraform code snippets that i reuse from time to time when a client who wants their
- cloud environment to be managed. 
+### This repo is inspired by Adam Rush's repo. I have refactored the code , removed deprecated code to accomodate terraform version changes.
+
+    Author:  Adam Rush
+    Blog:    https://adamrushuk.github.io
+    GitHub:  https://github.com/adamrushuk
+    Twitter: @adamrushuk
+
+This repository contains terraform code snippets and best practices notes that i reuse from time to time when managing cloud environment. 
 
 Test secure **Azure** provisioning using **Terraform**,
 utilising a [Remote Backend](https://www.terraform.io/docs/backends/types/azurerm.html) and a
 [Key Vault](https://azure.microsoft.com/en-gb/services/key-vault/) in Azure.
 
 > Terraform enables you to safely and predictably create, change, and improve infrastructure.
+
+### Remote Backend State with Terraform and Azure Storage
+
+Developing Infrastructure code as a single developer result in the tfstate file being created and 
+maintained on the local development computer.  This is fine for a team of one, but having multiple versions of a state 
+file can become an issue as more people join the team. I will show how to use a remote backend state on Azure Storage 
+to host shared state files. 
+
+How do we address potential issues when working in a team to deploy infrastructure as code? We use a centralized 
+state file that everyone has access to.There are two steps to follow.  First, we need to create a storage account.  
+Second, we configure the main.tf to use the remote state location.
+
+NB - I will not be using Terraform to create the storage account.  Terraform could be 
+used, it will work the same.  The remote state is stateful, meaning the data needs to persist through the lifecycle of 
+the code.  We can’t simply delete and recreate the storage account without removing the state file.  
+Because of that, in this example i will use powershell.
+
+Terraform needs rights to access the storage account when running the terraform init, plan, and apply commands.  
+We will use the storage account key for this.  We could add the key to the main.tf file, but that would go against best 
+practices of keeping security string out of code. We will host the Storage Account key in Azure Key Vault. 
+
+
 
 ## Preparation
 

@@ -1,6 +1,6 @@
 # My Terraform (AWS/Azure) best practices
 
-### This repo is inspired by Adam Rush's repo. I have refactored the code , removed deprecated code to accomodate terraform version changes.
+### This repo is inspired by Adam Rush's repo. I have adapted the code for my team ,refactored some parts , removed deprecated code to accomodate terraform version changes. 
 
     Author:  Adam Rush
     Blog:    https://adamrushuk.github.io
@@ -8,6 +8,8 @@
     Twitter: @adamrushuk
 
 This repository contains terraform code snippets and best practices notes that i reuse from time to time when managing cloud environment. 
+
+Some background - I lead a team of cloud delivery engineers operating remotely across Southern Africa (DRC , Zimbabwe ,Zambia and Botswana). Our customers are segmented into "managed cloud customers" and "unmanaged cloud customers". Depending on the scale of resources that the "managed cloud customer" wants to deploy - we use terraform and private git repos to manage their resources. 
 
 Test secure **Azure** provisioning using **Terraform**,
 utilising a [Remote Backend](https://www.terraform.io/docs/backends/types/azurerm.html) and a

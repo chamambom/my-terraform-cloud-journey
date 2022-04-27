@@ -19,9 +19,9 @@
         - ARM_ACCESS_KEY
 .EXAMPLE
     Connect-AzAccount -UseDeviceAuthentication
-    .\scripts\ConfigureAzureForSecureTerraformAccess.ps1 -adminUserDisplayName 'Martin Chamambo'
+    .\scripts\ConfigureAzureForSecureTerraformAccess.ps1 -adminUserDisplayName 'iac'
 
-    Displays device login link, then configures secure Terraform access for admin user "Martin Chamambo"
+    Displays device login link, then configures secure Terraform access for admin user "iac"
 .NOTES
     Assumptions:
     - Azure PowerShell module is installed: https://docs.microsoft.com/en-us/powershell/azure/install-az-ps

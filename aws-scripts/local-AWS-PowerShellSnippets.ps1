@@ -1,0 +1,2 @@
+gci env:AWS_*
+

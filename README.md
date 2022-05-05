@@ -13,7 +13,7 @@ Some background - I lead a team of cloud delivery engineers operating remotely a
 
 > Terraform enables you to safely and predictably create, change, and improve infrastructure.
 
-### Remote Backend State with Terraform and Azure/AWS Storage
+#### Remote Backend State with Terraform and Azure blob and AWS S3 Storage
 
 Developing Infrastructure code as a single developer result in the tfstate file being created and 
 maintained on the local development computer.  This is fine for a team of one, but having multiple versions of a state file can become an issue as more people join the team. I will show how to use a remote backend state on Azure Storage to host shared state files. 

@@ -1,6 +1,6 @@
 # My Terraform (AWS/Azure) best practices
 
-### This repo was inspired by Adam Rush's repo "details below". I have adapted the code for my myself and my team ,refactored some parts and added some code snipets for AWS and removed deprecated code to accomodate terraform version changes. 
+#### This repo was inspired by Adam Rush's repo "details below". I have adapted the code for myself and my team ,refactored some parts and added some code snipets for AWS and removed deprecated code to accomodate terraform version changes. 
 
     Author:  Adam Rush
     Blog:    https://adamrushuk.github.io
@@ -116,3 +116,9 @@ Before you can securely use Terraform with AWS, you will need to action the foll
 ### Configure AWS for Secure Terraform Access
 
 I mostly using the AWS secret and access environmental variables. I will adapt this part to incorporate AWS secrets manager 
+
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "my-access-key"
+  secret_key = "my-secret-key"
+}

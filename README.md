@@ -13,7 +13,7 @@ Some background - I lead a team of cloud delivery engineers operating remotely a
 
 > Terraform enables you to safely and predictably create, change, and improve infrastructure.
 
-#### Remote Backend State with Terraform and Azure blob and AWS S3 Storage
+### Remote Backend State with Terraform and Azure blob and AWS S3 Storage
 
 Developing Infrastructure code as a single developer result in the tfstate file being created and 
 maintained on the local development computer.  This is fine for a team of one, but having multiple versions of a state file can become an issue as more people join the team. I will show how to use a remote backend state on Azure Storage to host shared state files. 
@@ -117,8 +117,8 @@ Before you can securely use Terraform with AWS, you will need to action the foll
 
 I mostly using the AWS secret and access environmental variables. I will adapt this part to incorporate AWS secrets manager 
 
-provider "aws" {
-  region     = "us-west-2"
-  access_key = "my-access-key"
-  secret_key = "my-secret-key"
-}
+    provider "aws" {
+        region     = "us-west-2"
+        access_key = "my-access-key"
+        secret_key = "my-secret-key"
+    }

@@ -1,43 +1,36 @@
 # My Terraform (AWS/Azure) best practices
 
-### This repo is inspired by Adam Rush's repo "details below". I have adapted the code for my myself ,team ,refactored some parts , added some code snipets for AWS and removed deprecated code to accomodate terraform version changes. 
+### This repo was inspired by Adam Rush's repo "details below". I have adapted the code for my myself and my team ,refactored some parts and added some code snipets for AWS and removed deprecated code to accomodate terraform version changes. 
 
     Author:  Adam Rush
     Blog:    https://adamrushuk.github.io
     GitHub:  https://github.com/adamrushuk
     Twitter: @adamrushuk
 
-This repository contains terraform code snippets and best practices notes that i reuse from time to time when managing multi cloud environments. 
+This repository contains terraform code snippets and best practices notes that i reuse from time to time when managing multi cloud environments (AWS/Azure). 
 
-Some background - I lead a team of cloud delivery engineers operating remotely across Southern Africa (DRC , Zimbabwe ,Zambia and Botswana). Our customers are segmented into "managed cloud customers" and "unmanaged cloud customers". Depending on the scale of resources that the "managed cloud customer" wants to deploy - we use terraform and private git repos to manage their resources. 
+Some background - I lead a team of cloud delivery engineers operating remotely across Southern Africa (DRC , Zimbabwe ,Zambia and Botswana). Our customers are segmented into "managed cloud customers" and "unmanaged cloud customers". Depending on the scale of resources that the "managed cloud customer" wants to deploy - we use terraform and private git repos to manage resources. 
+
+> Terraform enables you to safely and predictably create, change, and improve infrastructure.
+
+### Remote Backend State with Terraform and Azure/AWS Storage
+
+Developing Infrastructure code as a single developer result in the tfstate file being created and 
+maintained on the local development computer.  This is fine for a team of one, but having multiple versions of a state file can become an issue as more people join the team. I will show how to use a remote backend state on Azure Storage to host shared state files. 
+
+How do we address potential issues when working in a team to deploy infrastructure as code? We use a centralized state file that everyone has access to.There are two steps to follow.  
+
+First, we need to create a storage account. 
+Second, we configure the main.tf to use the remote state location.
+
+NB - I will not be using Terraform to create the storage account.  Terraform could be 
+used, it will work the same.  The remote state is stateful, meaning the data needs to persist through the lifecycle of the code.  We can’t simply delete and recreate the storage account without removing the state file. Because of that, in this example i will use powershell.
+
+Terraform needs rights to access the storage account when running the terraform init, plan, and apply commands.We will use the storage account key for this.  We could add the key to the main.tf file, but that would go against best practices of keeping security string out of code. We will host the Storage Account key in Azure Key Vault. 
 
 Test secure **Azure** provisioning using **Terraform**,
 utilising a [Remote Backend](https://www.terraform.io/docs/backends/types/azurerm.html) and a
 [Key Vault](https://azure.microsoft.com/en-gb/services/key-vault/) in Azure.
-
-> Terraform enables you to safely and predictably create, change, and improve infrastructure.
-
-### Remote Backend State with Terraform and Azure Storage
-
-Developing Infrastructure code as a single developer result in the tfstate file being created and 
-maintained on the local development computer.  This is fine for a team of one, but having multiple versions of a state 
-file can become an issue as more people join the team. I will show how to use a remote backend state on Azure Storage 
-to host shared state files. 
-
-How do we address potential issues when working in a team to deploy infrastructure as code? We use a centralized 
-state file that everyone has access to.There are two steps to follow.  First, we need to create a storage account.  
-Second, we configure the main.tf to use the remote state location.
-
-NB - I will not be using Terraform to create the storage account.  Terraform could be 
-used, it will work the same.  The remote state is stateful, meaning the data needs to persist through the lifecycle of 
-the code.  We can’t simply delete and recreate the storage account without removing the state file.  
-Because of that, in this example i will use powershell.
-
-Terraform needs rights to access the storage account when running the terraform init, plan, and apply commands.  
-We will use the storage account key for this.  We could add the key to the main.tf file, but that would go against best 
-practices of keeping security string out of code. We will host the Storage Account key in Azure Key Vault. 
-
-
 
 ## Preparation
 
@@ -105,3 +98,21 @@ to reload the environment variables needed to Terraform to access Azure.
 1. Navigate to the `azure-examples\remote-backend\` folder.
 1. Remove the previously created Azure resources: `terraform destroy`
 1. Enter `yes` to confirm the planned actions.
+
+
+######################################################################################
+
+### Configure AWS for Secure Terraform Access
+
+## Preparation
+
+Before you can securely use Terraform with AWS, you will need to action the following steps:
+
+### Install AWS Dependencies / Log into AWS
+
+1. [Install the AWS CLI module](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps).
+1. Ensure you are logged in to AWS (eg. `using AWS access key and secret key`)
+
+### Configure AWS for Secure Terraform Access
+
+I mostly using the AWS secret and access environmental variables. I will adapt this part to incorporate AWS secrets manager 

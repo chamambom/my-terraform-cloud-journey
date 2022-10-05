@@ -13,15 +13,30 @@ Some background - I lead a team of cloud delivery engineers operating remotely a
 
 > Terraform enables you to safely and predictably create, change, and improve infrastructure.
 
+### Terraform Terminology
+
+Remember these four bullet points!
+
+    - Providers represent a cloud provider or a local provider
+    - Resources can be invoked to create/update infrastructure locally or in the cloud
+    - State is representation of the infrastructure created/updated by Terraform
+    - Data Sources are “read-only” resources
+
+There are 5 main commands within Terraform
+
+    - Terraform Init:- Allows you to initialise a terraform working directory
+    - Terraform Plan:- Generates an shows an execution plan
+    - Terraform Apply:- Builds or changes infrastructure
+    - Terraform Output:- Read an output from state file
+    - Terraform Destroy:- Destroy Terraforms infrastructure
+
 ### Remote Backend State with Terraform and Azure blob and AWS S3 Storage
 
-Developing Infrastructure code as a single developer result in the tfstate file being created and 
-maintained on the local development computer.  This is fine for a team of one, but having multiple versions of a state file can become an issue as more people join the team. I will show how to use a remote backend state on Azure Storage to host shared state files. 
+Developing Infrastructure code as a single developer result in the tfstate file being created and maintained on the local development computer.  This is fine for a team of one, but having multiple versions of a state file can become an issue as more people join the team. I will show how to use a remote backend state on Azure Storage to host shared state files. 
 
 How do we address potential issues when working in a team to deploy infrastructure as code? We use a centralized state file that everyone has access to.There are two steps to follow.  
 
-First, we need to create a storage account. 
-Second, we configure the main.tf to use the remote state location.
+First, we need to create a storage account.Second, we configure the main.tf to use the remote state location.
 
 NB - I will not be using Terraform to create the storage account.  Terraform could be 
 used, it will work the same.  The remote state is stateful, meaning the data needs to persist through the lifecycle of the code.  We can’t simply delete and recreate the storage account without removing the state file. Because of that, in this example i will use powershell.

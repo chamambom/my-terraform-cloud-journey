@@ -34,14 +34,17 @@ There are 5 main commands within Terraform
 
 Developing Infrastructure code as a single developer result in the tfstate file being created and maintained on the local development computer.  This is fine for a team of one, but having multiple versions of a state file can become an issue as more people join the team. I will show how to use a remote backend state on Azure Storage to host shared state files. 
 
-How do we address potential issues when working in a team to deploy infrastructure as code? We use a centralized state file that everyone has access to.There are two steps to follow.  
+How do we address potential issues when working in a team to deploy infrastructure as code? We use a centralized state file that everyone has access to.
 
-First, we need to create a storage account.Second, we configure the main.tf to use the remote state location.
+There are two steps to follow.  
+
+> we need to create a storage account
+> we configure the main.tf to use the remote state location.
 
 NB - I will not be using Terraform to create the storage account.  Terraform could be 
 used, it will work the same.  The remote state is stateful, meaning the data needs to persist through the lifecycle of the code.  We can’t simply delete and recreate the storage account without removing the state file. Because of that, in this example i will use powershell.
 
-Terraform needs rights to access the storage account when running the terraform init, plan, and apply commands.We will use the storage account key for this.  We could add the key to the main.tf file, but that would go against best practices of keeping security string out of code. We will host the Storage Account key in Azure Key Vault. 
+Terraform needs rights to access the storage account when running the terraform init, plan, and apply commands.We will use the storage account key for this.  We could add the key to the main.tf file, but that would go against best practices of keeping security strings out of code. We will host the Storage Account key in Azure Key Vault. 
 
 Test secure **Azure** provisioning using **Terraform**,
 utilising a [Remote Backend](https://www.terraform.io/docs/backends/types/azurerm.html) and a

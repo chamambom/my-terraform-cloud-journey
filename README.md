@@ -38,7 +38,7 @@ How do we address potential issues when working in a team to deploy infrastructu
 
 There are two steps to follow.  
 
-> we need to create a storage account
+> we need to create a storage account.
 > we configure the main.tf to use the remote state location.
 
 NB - I will not be using Terraform to create the storage account.  Terraform could be 

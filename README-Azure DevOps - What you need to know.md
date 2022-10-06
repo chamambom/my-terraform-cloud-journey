@@ -40,15 +40,29 @@ To begin creation, within your newly created Azure DevOps Project
 
 Azure Pipeline Breakdown
 
-Azure pipelines as code are created using .yaml syntax. the pipelines that you create will be versioned the same way as any code inside a Git Repository. 
- – making change to an Azure Pipeline? You can follow a pull-request process to ensure changes are verified and approved before being merged.
- -
+    Azure pipelines as code are created using .yaml syntax. the pipelines that you create will be versioned the same way as any code inside a Git Repository. 
+    – making change to an Azure Pipeline? You can follow a pull-request process to ensure changes are verified and approved before being merged.
+    -
 
 Pipeline basics 
 
-    Every pipeline that you create, must have one job
-    A job is a step or can consist as a series of steps that run sequentially as an unit
-    Moving from jobs to stages; each pipeline may even contain multiple stages, with each stage containing multiple jobs!
+    > Every pipeline that you create, must have one job
+    > A job is a step or can consist as a series of steps that run sequentially as an unit
+    > Moving from jobs to stages; 
+        > each pipeline may contain multiple stages
+        > each stage can contain multiple jobs!
+    > Pipelines can be run manually or triggered
+
+    Pipeline triggers 
+    > Pull request - 
+    > Scheduled triggers -run pipeline at a specific time
+    > pipeline triggers - Trigger one pipeline after another
+
+
+Variable Groups 
+
+> Use variable groups to store any values that you want to control and possible make available accross multiple pipelines.
+> store secrets and other values that might need to be ppassed into the pipeline.
 
 # Azure DevOps Extra Reading
 

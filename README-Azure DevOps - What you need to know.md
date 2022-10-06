@@ -34,15 +34,15 @@ In this blog, I will show you how to create this manually (there is PowerShell /
 
 User should have ['Owner' or 'User Access Administrator'] role 
 To begin creation, within your newly created Azure DevOps Project 
-        --– select Project Settings then under pipelines
-        --- Select Service Connections
-        --- Scope Level (subscription or management group)  
+        select Project Settings then under pipelines
+        Select Service Connections
+        Scope Level (subscription or management group)  
 
 Azure Pipeline Breakdown
 
 Azure pipelines as code are created using .yaml syntax. the pipelines that you create will be versioned the same way as any code inside a Git Repository 
-– making change to an Azure Pipeline? You can follow a pull-request process to ensure changes are verified and approved before being merged.
--
+ – making change to an Azure Pipeline? You can follow a pull-request process to ensure changes are verified and approved before being merged.
+ -
 
 # Azure DevOps Extra Reading
 

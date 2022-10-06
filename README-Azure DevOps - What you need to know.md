@@ -21,10 +21,10 @@ Store your state file in a remote - Storage Account container
 
 You can boostrap this process with powershell or bash scripts but we will create these manually
 
-### Login into your azure portal 
-### Create a Resource Group - to house your storage account and all other resources that you will deploy
-### Create a Storage Account
-### Create a container inside the storage account
+    Login into your azure portal 
+    Create a Resource Group - to house your storage account and all other resources that you will deploy
+    Create a Storage Account
+    Create a container inside the storage account
 
 ### Azure Service Principal
 
@@ -64,7 +64,7 @@ Variable Groups
 > Use variable groups to store any values that you want to control and possible make available accross multiple pipelines.
 > store secrets and other values that might need to be ppassed into the pipeline.
 
-# Azure DevOps Extra Reading
+### Azure DevOps Extra Reading
 
 1) Choose a process flow or process template to work in Azure Boards - https://learn.microsoft.com/en-us/azure/devops/boards/work-items/guidance/choose-process?view=azure-devops&tabs=agile-process
 2) https://learn.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml

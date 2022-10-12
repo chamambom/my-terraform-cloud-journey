@@ -21,10 +21,10 @@ Store your state file in a remote - Storage Account container
 
 You can boostrap this process with powershell or bash scripts but we will create these manually
 
-    Login into your azure portal 
-    Create a Resource Group - to house your storage account and all other resources that you will deploy
-    Create a Storage Account
-    Create a container inside the storage account
+    > Login into your azure portal 
+    > Create a Resource Group - to house your storage account and all other resources that you will deploy
+    > Create a Storage Account
+    > Create a container inside the storage account
 
 ### Azure Service Principal
 
@@ -54,15 +54,23 @@ Pipeline basics
     > Pipelines can be run manually or triggered
 
     Pipeline triggers 
-    > Pull request - 
-    > Scheduled triggers -run pipeline at a specific time
-    > pipeline triggers - Trigger one pipeline after another
-
+        > Pull request - 
+        > Scheduled triggers -run pipeline at a specific time
+        > pipeline triggers - Trigger one pipeline after another
 
 Variable Groups 
 
+To use a variable from a variable group, you need to add a reference to the group in your YAML file:
+
+variables:
+    - group:azure-develop
+
 > Use variable groups to store any values that you want to control and possible make available accross multiple pipelines.
 > store secrets and other values that might need to be ppassed into the pipeline.
+
+Azure Pipelines
+
+if defined in YAML code, your pipeline can live within your Git Repository, and in that sense it becomes an auditable and controlled piece of code along with your actual build artefacts and existing code base. A well crafted YAML file can act as your CI/CD automation effort for your code, but it can also act as your BCDR plan and goto strategy!
 
 ### Azure DevOps Extra Reading
 

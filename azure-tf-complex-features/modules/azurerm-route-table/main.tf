@@ -26,7 +26,7 @@ resource "azurerm_route_table" "rt" {
 #   tags                          = var.tags
 }
 
-resource "azurerm_subnet_route_table_association" "spoke-to-firewall_01" {
+resource "azurerm_subnet_route_table_association" "spoke-to-firewall" {
   for_each = toset(var.subnet_ids)
   subnet_id      = each.value
   route_table_id = azurerm_route_table.rt.id

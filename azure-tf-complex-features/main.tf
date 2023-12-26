@@ -6,9 +6,10 @@ module "desktop-resourcegroup" {
   # Resource Group Variables
   az_rg_name     = "rg-fme-prd-ae-001"
   az_rg_location = "australiaeast"
-  providers = {
-    azurerm = azurerm.prod
-  }
+  
+  # providers = {
+  #   azurerm = azurerm.prod
+  # }
 }
 
 ####################################################################################

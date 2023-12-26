@@ -1,7 +1,7 @@
 output "rg_name" {
-  value = azurerm_resource_group.az-rg.name
+  value = azurerm_resource_group.rg.name
 }
 
 output "rg_location" {
-  value = azurerm_resource_group.az-rg.location
+  value = azurerm_resource_group.rg.location
 }

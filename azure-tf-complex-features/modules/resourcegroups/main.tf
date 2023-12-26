@@ -16,9 +16,9 @@ terraform {
 
 # Resource Group
 
-resource "azurerm_resource_group" "az-rg" {
-  name     = var.az_rg_name
-  location = var.az_rg_location
+resource "azurerm_resource_group" "rg" {
+  name     = var.rg_name
+  location = var.rg_location
 
   # tags = local.all_tags
 }

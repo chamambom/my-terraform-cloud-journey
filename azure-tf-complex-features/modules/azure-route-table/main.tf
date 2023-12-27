@@ -31,3 +31,4 @@ resource "azurerm_subnet_route_table_association" "spoke-to-firewall" {
   subnet_id      = each.value
   route_table_id = azurerm_route_table.rt.id
 }
+

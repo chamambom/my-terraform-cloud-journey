@@ -14,36 +14,36 @@
 #   value       = module.vnet.resource_group_location
 # }
 
-# #VNet and Subnets 
-# output "virtual_network_name" {
-#   description = "The name of the virtual network"
-#   value       = module.vnet.virtual_network_name
-# }
+#VNet and Subnets 
+output "virtual_network_name" {
+  description = "The name of the virtual network"
+  value       = module.hub-vnet.virtual_network_name
+}
 
-# output "virtual_network_id" {
-#   description = "The id of the virtual network"
-#   value       = module.vnet.virtual_network_id
-# }
+output "virtual_network_id" {
+  description = "The id of the virtual network"
+  value       = module.hub-vnet.virtual_network_id
+}
 
-# output "virtual_network_address_space" {
-#   description = "List of address spaces that are used the virtual network."
-#   value       = module.vnet.virtual_network_address_space
-# }
+output "virtual_network_address_space" {
+  description = "List of address spaces that are used the virtual network."
+  value       = module.hub-vnet.virtual_network_address_space
+}
 
-# output "subnet_ids" {
-#   description = "List of IDs of subnets"
-#   value       = module.spoke1-vnet.subnet_ids
-# }
+output "subnet_ids" {
+  description = "List of IDs of subnets"
+  value       = module.hub-vnet.subnet_ids
+}
 
-# output "subnet_address_prefixes" {
-#   description = "List of address prefix for subnets"
-#   value       = module.vnet.subnet_address_prefixes
-# }
+output "subnet_address_prefixes" {
+  description = "List of address prefix for subnets"
+  value       = module.hub-vnet.subnet_address_prefixes
+}
 
-# output "network_security_group_ids" {
-#   description = "List of Network security groups and ids"
-#   value       = module.vnet.network_security_group_ids
-# }
+output "network_security_group_ids" {
+  description = "List of Network security groups and ids"
+  value       = module.hub-vnet.network_security_group_ids
+}
 
 # # DDoS Protection plan
 # output "ddos_protection_plan" {

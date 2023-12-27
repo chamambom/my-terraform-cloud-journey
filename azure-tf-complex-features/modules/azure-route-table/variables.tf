@@ -32,6 +32,7 @@ variable "disable_bgp_route_propagation" {
 #   description = "A mapping of tags to assign to the resource."
 # }
 
-variable "subnet_ids"{
-  type    = list(any)
+variable "subnet_ids" {
+  type = list(any)
+
 }

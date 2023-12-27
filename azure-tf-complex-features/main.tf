@@ -292,7 +292,6 @@ module "spoke2-vnet" {
 #              Route table Module is Used to route tables            
 ####################################################################################
 
-
 module "route-table-workload-a" {
   source              = "./modules/azure-route-table"
   name                = "rt-workload-a-afwroute-001"
@@ -303,7 +302,7 @@ module "route-table-workload-a" {
   ]
   disable_bgp_route_propagation = true
 
-  subnet_ids = module.spoke1-vnet.subnet_ids
+  subnet_ids = module.spoke2-vnet.subnet_ids
 
   #   providers = {
   #   azurerm = azurerm.prod

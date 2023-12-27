@@ -2,11 +2,11 @@
 #              Resource Group Module is Used to Create Resource Groups            
 ####################################################################################
 module "workload-a-resourcegroup" {
-  source = "./modules/resourcegroups"
+  source = "./modules/azurerm-resourcegroup"
   # Resource Group Variables
   rg_name     = "rg-workload-a-prd-ae-001"
   rg_location = "australiaeast"
-  
+
   # providers = {
   #   azurerm = azurerm.prod
   # }
@@ -18,7 +18,7 @@ module "workload-b-resourcegroup" {
   # Resource Group Variables
   rg_name     = "rg-workload-b-prd-ae-001"
   rg_location = "australiaeast"
-  
+
   # providers = {
   #   azurerm = azurerm.prod
   # }
@@ -32,10 +32,10 @@ module "hub-vnet" {
   source = "./modules/azurerm-network-resources"
 
 
-  resource_group_name            = "rg-shared-ae-01"
-  vnetwork_name                  = "vnet-shared-hub-ae-001"
-  location                       = "australiaeast"
-  vnet_address_space             = ["10.210.0.0/24"]
+  resource_group_name = "rg-shared-ae-01"
+  vnetwork_name       = "vnet-shared-hub-ae-001"
+  location            = "australiaeast"
+  vnet_address_space  = ["10.210.0.0/24"]
 
 
   firewall_subnet_address_prefix = ["10.210.0.96/27"]
@@ -153,7 +153,7 @@ module "route-table-workload-b" {
   ]
   disable_bgp_route_propagation = true
 
-  subnet_ids = [data.azurerm_subnet.aadds.id, data.azurerm_subnet.pdns-resolver-inbound.id, data.azurerm_subnet.pdns-resolver-outbound.id ]
+  subnet_ids = [data.azurerm_subnet.aadds.id, data.azurerm_subnet.pdns-resolver-inbound.id, data.azurerm_subnet.pdns-resolver-outbound.id]
 
   #   providers = {
   #   azurerm = azurerm.shared

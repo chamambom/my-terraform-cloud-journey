@@ -302,32 +302,35 @@ module "route-table-workload-a" {
   ]
   disable_bgp_route_propagation = true
 
-  subnet_ids = module.spoke2-vnet.subnet_ids
+  subnet_ids = module.spoke1-vnet.subnet_ids
+
+  depends_on = [module.spoke1-vnet, module.spoke2-vnet]
 
   #   providers = {
   #   azurerm = azurerm.prod
   # }
+
 }
 
 
-# module "route-table-workload-b" {
-#   source              = "./modules/azure-route-table"
-#   name                = "rt-workload-b-afwroute-001"
-#   resource_group_name = module.workload-b-resourcegroup.rg_name
-#   location            = "australiaeast"
-#   routes = [
-#     { name = "ToFortigateFirewall", address_prefix = "10.0.0.0/8", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
-#     { name = "WANA", address_prefix = "59.153.21.0/24", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
-#     { name = "WANB", address_prefix = "202.49.24.0/23", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
-#     { name = "WANC", address_prefix = "202.49.26.0/24", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" }
-#   ]
+module "route-table-workload-b" {
+  source              = "./modules/azure-route-table"
+  name                = "rt-workload-b-afwroute-001"
+  resource_group_name = module.workload-b-resourcegroup.rg_name
+  location            = "australiaeast"
+  routes = [
+    { name = "ToFortigateFirewall", address_prefix = "10.0.0.0/8", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
+    { name = "WANA", address_prefix = "59.153.21.0/24", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
+    { name = "WANB", address_prefix = "202.49.24.0/23", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
+    { name = "WANC", address_prefix = "202.49.26.0/24", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" }
+  ]
 
-#   disable_bgp_route_propagation = true
+  disable_bgp_route_propagation = true
 
-#   subnet_ids = [module.spoke2-vnet.subnet_ids]
+  subnet_ids = [module.hub-vnet, module.spoke2-vnet, module.spoke1-vnet]
 
 
-#   #   providers = {
-#   #   azurerm = azurerm.shared
-#   # }
-# }
+  #   providers = {
+  #   azurerm = azurerm.shared
+  # }
+}

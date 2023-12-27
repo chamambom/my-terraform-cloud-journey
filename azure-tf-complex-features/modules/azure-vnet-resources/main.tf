@@ -1,12 +1,14 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source                = "hashicorp/azurerm"
-      version               = "~>3.0"
-      configuration_aliases = [azurerm]
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     azurerm = {
+#       source                = "hashicorp/azurerm"
+#       version               = "~>3.0"
+#       configuration_aliases = [azurerm]
+#     }
+#   }
+# }
+
+# The above configuration is required if you are working with multiple subscriptions.
 
 #------------------------
 # Local declarations

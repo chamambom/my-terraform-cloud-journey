@@ -1,12 +1,12 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source                = "hashicorp/azurerm"
-      version               = "~>3.0"
-      configuration_aliases = [azurerm]
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     azurerm = {
+#       source                = "hashicorp/azurerm"
+#       version               = "~>3.0"
+#       configuration_aliases = [azurerm]
+#     }
+#   }
+# }
 
 
 resource "azurerm_route_table" "rt" {
@@ -23,11 +23,11 @@ resource "azurerm_route_table" "rt" {
     }
   }
   disable_bgp_route_propagation = var.disable_bgp_route_propagation
-#   tags                          = var.tags
+  #   tags                          = var.tags
 }
 
 resource "azurerm_subnet_route_table_association" "spoke-to-firewall" {
-  for_each = toset(var.subnet_ids)
+  for_each       = toset(var.subnet_ids)
   subnet_id      = each.value
   route_table_id = azurerm_route_table.rt.id
 }

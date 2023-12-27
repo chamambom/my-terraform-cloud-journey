@@ -29,7 +29,7 @@ module "workload-b-resourcegroup" {
 ####################################################################################
 
 module "hub-vnet" {
-  source = "./modules/azure-network-resources"
+  source = "./modules/azure-vnet-resources"
 
 
   resource_group_name = "rg-shared-ae-01"
@@ -141,7 +141,7 @@ module "route-table-workload-a" {
 
 
 module "route-table-workload-b" {
-  source              = "./modules/azurerm-route-table"
+  source              = "./modules/azure-route-table"
   name                = "rt-workload-b-afwroute-001"
   resource_group_name = module.workload-b-resourcegroup.rg_name
   location            = "australiaeast"

@@ -35,9 +35,11 @@ module "hub-vnet" {
   resource_group_name            = "rg-shared-ae-01"
   vnetwork_name                  = "vnet-shared-hub-ae-001"
   location                       = "australiaeast"
-  vnet_address_space             = ["10.1.0.0/16"]
-  firewall_subnet_address_prefix = ["10.1.0.0/26"]
-  gateway_subnet_address_prefix  = ["10.1.1.0/27"]
+  vnet_address_space             = ["10.210.0.0/24"]
+
+
+  firewall_subnet_address_prefix = ["10.210.0.96/27"]
+  gateway_subnet_address_prefix  = ["10.210.0.0/26"]
   create_network_watcher         = false
 
   # Adding Standard DDoS Plan, and custom DNS servers (Optional)
@@ -52,7 +54,7 @@ module "hub-vnet" {
   subnets = {
     mgnt_subnet = {
       subnet_name           = "snet-management"
-      subnet_address_prefix = ["10.1.2.0/24"]
+      subnet_address_prefix = ["10.210.0.128/27"]
 
       delegation = {
         name = "testdelegation"
@@ -79,7 +81,7 @@ module "hub-vnet" {
 
     dmz_subnet = {
       subnet_name           = "snet-appgateway"
-      subnet_address_prefix = ["10.1.3.0/24"]
+      subnet_address_prefix = ["10.210.0.64/27"]
       service_endpoints     = ["Microsoft.Storage"]
 
       nsg_inbound_rules = [
@@ -96,11 +98,11 @@ module "hub-vnet" {
       ]
     }
 
-    pvt_subnet = {
-      subnet_name           = "snet-pvt"
-      subnet_address_prefix = ["10.1.4.0/24"]
-      service_endpoints     = ["Microsoft.Storage"]
-    }
+    # pvt_subnet = {
+    #   subnet_name           = "snet-pvt"
+    #   subnet_address_prefix = ["10.210.0.64/27"]
+    #   service_endpoints     = ["Microsoft.Storage"]
+    # }
   }
 
   # Adding TAG's to your Azure resources (Required)

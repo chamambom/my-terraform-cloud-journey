@@ -2,7 +2,7 @@
 #              Resource Group Module is Used to Create Resource Groups            
 ####################################################################################
 module "workload-a-resourcegroup" {
-  source = "./modules/azurerm-resourcegroup"
+  source = "./modules/azure-resourcegroup"
   # Resource Group Variables
   rg_name     = "rg-workload-a-prd-ae-001"
   rg_location = "australiaeast"
@@ -14,7 +14,7 @@ module "workload-a-resourcegroup" {
 
 
 module "workload-b-resourcegroup" {
-  source = "./modules/azurerm-resourcegroup"
+  source = "./modules/azure-resourcegroup"
   # Resource Group Variables
   rg_name     = "rg-workload-b-prd-ae-001"
   rg_location = "australiaeast"
@@ -29,7 +29,7 @@ module "workload-b-resourcegroup" {
 ####################################################################################
 
 module "hub-vnet" {
-  source = "./modules/azurerm-network-resources"
+  source = "./modules/azure-network-resources"
 
 
   resource_group_name = "rg-shared-ae-01"
@@ -123,7 +123,7 @@ module "hub-vnet" {
 
 
 module "route-table-workload-a" {
-  source              = "./modules/azurerm-route-table"
+  source              = "./modules/azure-route-table"
   name                = "rt-workload-a-afwroute-001"
   resource_group_name = module.workload-a-resourcegroup.rg_name
   location            = "australiaeast"

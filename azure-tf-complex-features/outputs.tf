@@ -32,7 +32,7 @@
 
 # output "subnet_ids" {
 #   description = "List of IDs of subnets"
-#   value       = module.vnet.subnet_ids
+#   value       = module.spoke1-vnet.subnet_ids
 # }
 
 # output "subnet_address_prefixes" {

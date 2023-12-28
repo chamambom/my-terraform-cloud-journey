@@ -196,7 +196,7 @@ module "spoke1-vnet" {
 
     pvt_subnet = {
       subnet_name           = "snet-pvt"
-      subnet_address_prefix = ["10.210.0.64/27"]
+      subnet_address_prefix = ["10.220.0.128/27"]
       service_endpoints     = ["Microsoft.Storage"]
     }
   }

@@ -337,7 +337,9 @@ module "route-table-workload-b" {
 
   disable_bgp_route_propagation = true
 
-  subnet_ids = [module.hub-vnet, module.spoke2-vnet, module.spoke1-vnet]
+  subnet_ids = module.spoke2-vnet.subnet_ids
+
+  depends_on = [module.hub-vnet, module.spoke1-vnet, module.spoke2-vnet]
 
 
   #   providers = {
@@ -356,8 +358,8 @@ module "hub-to-spoke1" {
 
   virtual_network_peering_name = "vnet-hub-to-vnet-workload-a"
   resource_group_name          = module.connectivity-resourcegroup.rg_name
-  virtual_network_name         = module.hub-vnet.vnetwork_name
-  remote_virtual_network_id    = module.spoke1-vnet.vnet_id
+  virtual_network_name         = module.hub-vnet.virtual_network_name
+  remote_virtual_network_id    = module.spoke1-vnet.virtual_network_id
   allow_virtual_network_access = "true"
   allow_forwarded_traffic      = "true"
   allow_gateway_transit        = "true"
@@ -375,8 +377,8 @@ module "spoke1-to-hub" {
 
   virtual_network_peering_name = "vnet-workload-a-to-vnet-hub"
   resource_group_name          = module.workload-a-resourcegroup.rg_name
-  virtual_network_name         = module.spoke1-vnet.vnetwork_name
-  remote_virtual_network_id    = module.hub-vnet.vnet_id
+  virtual_network_name         = module.spoke1-vnet.virtual_network_name
+  remote_virtual_network_id    = module.hub-vnet.virtual_network_id
   allow_virtual_network_access = "true"
   allow_forwarded_traffic      = "true"
   allow_gateway_transit        = "false"

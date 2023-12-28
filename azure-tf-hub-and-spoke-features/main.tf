@@ -50,7 +50,7 @@ module "hub-vnet" {
 
 
   firewall_subnet_address_prefix = ["10.210.0.0/26"]
-  gateway_subnet_address_prefix  = ["10.210.0.0/26"]
+  gateway_subnet_address_prefix  = ["10.210.0.64/26"]
   create_network_watcher         = false
 
   # Adding Standard DDoS Plan, and custom DNS servers (Optional)

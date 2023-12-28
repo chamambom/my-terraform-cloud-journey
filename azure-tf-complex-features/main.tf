@@ -384,7 +384,7 @@ module "spoke1-to-hub" {
   allow_gateway_transit        = "false"
   # As there is no gateway while testing - Setting to False
   #use_remote_gateways   = "true"
-  use_remote_gateways = "true"
+  use_remote_gateways = "false"
 
 
   # providers = {

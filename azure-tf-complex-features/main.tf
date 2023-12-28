@@ -304,7 +304,7 @@ module "route-table-workload-a" {
 
   subnet_ids = module.spoke1-vnet.subnet_ids
 
-  depends_on = [module.hub-vnet,module.spoke1-vnet, module.spoke2-vnet]
+  depends_on = [module.hub-vnet, module.spoke1-vnet, module.spoke2-vnet]
 
   #   providers = {
   #   azurerm = azurerm.prod

@@ -24,6 +24,17 @@ module "workload-b-resourcegroup" {
   # }
 }
 
+module "connectivity-resourcegroup" {
+  source = "./modules/azure-resourcegroup"
+  # Resource Group Variables
+  rg_name     = "rg-shared-ae-001"
+  rg_location = "australiaeast"
+
+  # providers = {
+  #   azurerm = azurerm.prod
+  # }
+}
+
 ####################################################################################
 #              virtual network Module is Used to vnets and subnets            
 ####################################################################################
@@ -32,8 +43,8 @@ module "hub-vnet" {
   source = "./modules/azure-vnet-resources"
 
 
-  resource_group_name = "rg-shared-ae-01"
-  vnetwork_name       = "vnet-shared-hub-ae-001"
+  resource_group_name = module.connectivity-resourcegroup.rg_name
+  vnetwork_name       = "vnet-connectivity-hub-ae-001"
   location            = "australiaeast"
   vnet_address_space  = ["10.210.0.0/24"]
 
@@ -118,8 +129,7 @@ module "hub-vnet" {
 module "spoke1-vnet" {
   source = "./modules/azure-vnet-resources"
 
-
-  resource_group_name = "rg-spoke1-ae-01"
+  resource_group_name = module.workload-a-resourcegroup.rg_name
   vnetwork_name       = "vnet-spoke1-ae-001"
   location            = "australiaeast"
   vnet_address_space  = ["10.220.0.0/24"]
@@ -206,7 +216,7 @@ module "spoke1-vnet" {
 module "spoke2-vnet" {
   source = "./modules/azure-vnet-resources"
 
-  resource_group_name = "rg-spoke2-ae-01"
+  resource_group_name = module.workload-b-resourcegroup.rg_name
   vnetwork_name       = "vnet-spoke2-ae-001"
   location            = "australiaeast"
   vnet_address_space  = ["10.230.0.0/24"]
@@ -341,7 +351,7 @@ module "route-table-workload-b" {
 
 # vnet-peering Module is used to create peering between Virtual Networks
 module "hub-to-spoke1" {
-  source     = "./modules/vnet-peering"
+  source = "./modules/vnet-peering"
 
 
   virtual_network_peering_name = "vnet-hub-ae-001-to-vnet-fme-prd-ae-001"

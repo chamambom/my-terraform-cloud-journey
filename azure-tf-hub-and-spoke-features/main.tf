@@ -49,7 +49,7 @@ module "hub-vnet" {
   vnet_address_space  = ["10.210.0.0/24"]
 
 
-  firewall_subnet_address_prefix = ["10.210.0.96/27"]
+  firewall_subnet_address_prefix = ["10.210.0.0/26"]
   gateway_subnet_address_prefix  = ["10.210.0.0/26"]
   create_network_watcher         = false
 
@@ -92,7 +92,7 @@ module "hub-vnet" {
 
     dmz_subnet = {
       subnet_name           = "snet-appgateway"
-      subnet_address_prefix = ["10.210.0.64/27"]
+      subnet_address_prefix = ["10.210.0.160/27"]
       service_endpoints     = ["Microsoft.Storage"]
 
       nsg_inbound_rules = [
@@ -109,11 +109,11 @@ module "hub-vnet" {
       ]
     }
 
-    # pvt_subnet = {
-    #   subnet_name           = "snet-pvt"
-    #   subnet_address_prefix = ["10.210.0.64/27"]
-    #   service_endpoints     = ["Microsoft.Storage"]
-    # }
+    pvt_subnet = {
+      subnet_name           = "snet-pvt"
+      subnet_address_prefix = ["10.210.0.192/27"]
+      service_endpoints     = ["Microsoft.Storage"]
+    }
   }
 
   # Adding TAG's to your Azure resources (Required)
@@ -194,11 +194,11 @@ module "spoke1-vnet" {
       ]
     }
 
-    # pvt_subnet = {
-    #   subnet_name           = "snet-pvt"
-    #   subnet_address_prefix = ["10.210.0.64/27"]
-    #   service_endpoints     = ["Microsoft.Storage"]
-    # }
+    pvt_subnet = {
+      subnet_name           = "snet-pvt"
+      subnet_address_prefix = ["10.210.0.64/27"]
+      service_endpoints     = ["Microsoft.Storage"]
+    }
   }
 
   # Adding TAG's to your Azure resources (Required)

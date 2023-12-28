@@ -351,7 +351,7 @@ module "route-table-workload-b" {
 
 # vnet-peering Module is used to create peering between Virtual Networks
 module "hub-to-spoke1" {
-  source = "./modules/vnet-peering"
+  source = "./modules/azure-vnet-peering"
 
 
   virtual_network_peering_name = "vnet-hub-to-vnet-workload-a"
@@ -371,7 +371,7 @@ module "hub-to-spoke1" {
 
 # vnet-peering Module is used to create peering between Virtual Networks
 module "spoke1-to-hub" {
-  source = "./modules/vnet-peering"
+  source = "./modules/azure-vnet-peering"
 
   virtual_network_peering_name = "vnet-workload-a-to-vnet-hub"
   resource_group_name          = module.workload-a-resourcegroup.rg_name

@@ -334,3 +334,49 @@ module "route-table-workload-b" {
   #   azurerm = azurerm.shared
   # }
 }
+
+####################################################################################
+#              Spokes Module is Used to route tables            
+####################################################################################
+
+# vnet-peering Module is used to create peering between Virtual Networks
+module "hub-to-spoke1" {
+  source     = "./modules/vnet-peering"
+
+
+  virtual_network_peering_name = "vnet-hub-ae-001-to-vnet-fme-prd-ae-001"
+  resource_group_name          = data.azurerm_virtual_network.vnet.resource_group_name
+  virtual_network_name         = data.azurerm_virtual_network.vnet.name
+  remote_virtual_network_id    = module.desktop-vnet.vnet_id
+  allow_virtual_network_access = "true"
+  allow_forwarded_traffic      = "true"
+  allow_gateway_transit        = "true"
+  use_remote_gateways          = "false"
+
+  providers = {
+    azurerm = azurerm.connectivity
+  }
+
+}
+
+# vnet-peering Module is used to create peering between Virtual Networks
+module "spoke1-to-hub" {
+  source = "./modules/vnet-peering"
+
+  virtual_network_peering_name = "vnet-fme-prd-ae-001-01-to-vnet-hub-ae-001"
+  resource_group_name          = module.desktop-resourcegroup.rg_name
+  virtual_network_name         = module.desktop-vnet.vnet_name
+  remote_virtual_network_id    = data.azurerm_virtual_network.vnet.id
+  allow_virtual_network_access = "true"
+  allow_forwarded_traffic      = "true"
+  allow_gateway_transit        = "false"
+  # As there is no gateway while testing - Setting to False
+  #use_remote_gateways   = "true"
+  use_remote_gateways = "true"
+
+
+  # providers = {
+  #   azurerm = azurerm.prod
+  # }
+
+}

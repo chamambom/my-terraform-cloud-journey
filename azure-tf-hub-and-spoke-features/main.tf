@@ -392,3 +392,27 @@ module "spoke1-to-hub" {
   # }
 
 }
+
+
+# azurefirewall Module is used to create Azure Firewall 
+# Firewall Policy
+# Associate Firewall Policy with Azure Firewall
+# Network and Application Firewall Rules 
+module "azure_firewall_01" {
+  source     = "./modules/azure-firewall"
+  
+  depends_on = [module.hub-vnet]
+
+  azure_firewall_name = "afw-connectivity-hub-01"
+  location            = module.hub-resourcegroup.rg_location
+  resource_group_name = module.hub-resourcegroup.rg_name
+  sku_name            = "AZFW_VNet"
+  sku_tier            = "Standard"
+
+  ipconfig_name        = "configuration"
+  subnet_id            = module.hub-vnet.vnet_subnet_id[2]
+  public_ip_address_id = module.public_ip_03.public_ip_address_id
+  
+  azure_firewall_policy_name            = "afwpolicy-tpk-ae-001"
+  
+}

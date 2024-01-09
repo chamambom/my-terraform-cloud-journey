@@ -400,7 +400,7 @@ module "spoke1-to-hub" {
 # Network and Application Firewall Rules 
 module "azure_firewall_01" {
   source     = "./modules/azure-firewall"
-  
+
   depends_on = [module.hub-vnet]
 
   azure_firewall_name = "afw-connectivity-hub-01"
@@ -415,4 +415,154 @@ module "azure_firewall_01" {
   
   azure_firewall_policy_name            = "afwpolicy-tpk-ae-001"
   
+}
+
+
+# NB - I deployed this code with the hope that I will make it better
+# If you become the custodian of this codebase, you need to enhance the code by using dynamic blocks for rules to
+# avoid repition of the code blocks
+
+
+# Resource Group Module is Used to Create Resource Groups
+module "ipgroups-resourcegroup" {
+  source = "./modules/resourcegroups"
+  # Resource Group Variables
+  az_rg_name     = "rg-ipgroups-001"
+  az_rg_location = "australiaeast"
+  providers = {
+    azurerm = azurerm.connectivity
+  }
+}
+
+module "ip_groupA" {
+  source = "./modules/ipgroups"
+
+  ip_group_name = "NPS_Radius_Servers"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location = "australiaeast"
+  cidr_blocks =  ["10.210.6.0/28"]
+
+  providers = {
+    azurerm = azurerm.connectivity
+  }
+}
+
+module "ip_groupB" {
+  source = "./modules/ipgroups"
+
+  ip_group_name = "AOVPN_Internal_Subnet"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location = "australiaeast"
+  cidr_blocks =  ["10.210.4.0/27"]
+
+  providers = {
+    azurerm = azurerm.connectivity
+  }
+}
+
+module "ip_groupC" {
+  source = "./modules/ipgroups"
+
+  ip_group_name = "AD_Servers"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location = "australiaeast"
+  cidr_blocks =  ["10.210.6.0/28"]
+
+  providers = {
+    azurerm = azurerm.connectivity
+  }
+}
+
+
+module "azure_firewall_rules" {
+  source     = "./modules/firewallrules"
+  location            = "australiaeast"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+
+  azure_firewall_policy_coll_group_name = "afwpolicy-collection-group-tpk-ae-001"
+  azure_firewall_policy_name            = "afwpolicy-tpk-ae-001"
+  priority                              = 100
+
+  network_rule_coll_name_01     = "Blocked_Network_Rules"
+  network_rule_coll_priority_01 = "200"
+  network_rule_coll_action_01   = "Deny"
+  network_rules_01 = [
+    {
+      name                  = "Blocked_rule_1"
+      source_ip_groups       = [module.ip_groupA.ip_group_id_out]
+      destination_ip_groups  = [module.ip_groupB.ip_group_id_out]
+      destination_ports     = [11]
+      protocols             = ["TCP"]
+    },
+
+  ]
+
+  network_rule_coll_name_02     = "Allowed_Network_Rules"
+  network_rule_coll_priority_02 = "300"
+  network_rule_coll_action_02   = "Allow"
+  network_rules_02 = [
+    {
+      name                  = "NPS_Radius_Servers_Outbound"
+      source_ip_groups       = [module.ip_groupA.ip_group_id_out]
+      destination_ip_groups  = [module.ip_groupB.ip_group_id_out]
+      destination_ports     = [1812,1813,1645,1646]
+      protocols             = ["UDP","ICMP"]
+    },
+     {
+      name                  = "NPS_Radius_Servers_Inbound"
+      source_ip_groups       = [module.ip_groupB.ip_group_id_out]
+      destination_ip_groups  = [module.ip_groupA.ip_group_id_out]
+      destination_ports     = [1812,1813,1645,1646]
+      protocols             = ["UDP","ICMP"]
+    },
+    {
+      name                  = "AD_Servers_Inbound"
+      source_ip_groups       = [module.ip_groupB.ip_group_id_out]
+      destination_ip_groups  = [module.ip_groupC.ip_group_id_out]
+      destination_ports     = [389,636,445,53,3268,3269,88,135,464,139,"49152-65535",88]
+      protocols             = ["UDP","TCP","ICMP"]
+    },
+
+    {
+      name                  = "AD_Servers_Outbound"
+      source_ip_groups       = [module.ip_groupC.ip_group_id_out]
+      destination_ip_groups  = [module.ip_groupB.ip_group_id_out]
+      destination_ports     = [389,636,445,53,3268,3269,88,135,464,139,"49152-65535",88]
+      protocols             = ["UDP","TCP","ICMP"]
+    },
+
+  ]
+  
+
+
+  application_rule_coll_name     = "Allowed_Services"
+  application_rule_coll_priority = "500"
+  application_rule_coll_action   = "Allow"
+  application_rules = [
+    {
+      name              = "Allowed_website_01"
+      source_addresses  = ["*"]
+      destination_fqdns = ["bing.co.uk"]
+    },
+    {
+      name              = "Allowed_website_02"
+      source_addresses  = ["*"]
+      destination_fqdns = ["*.bing.com"]
+    }
+  ]
+  application_protocols = [
+    {
+      type = "Http"
+      port = 80
+    },
+    {
+      type = "Https"
+      port = 443
+    }
+  ]
+
+  providers = {
+    azurerm = azurerm.connectivity
+  }
+
 }

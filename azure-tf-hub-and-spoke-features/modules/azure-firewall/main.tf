@@ -1,12 +1,12 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source                = "hashicorp/azurerm"
-      version               = "~>3.0"
-      configuration_aliases = [azurerm]
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     azurerm = {
+#       source                = "hashicorp/azurerm"
+#       version               = "~>3.0"
+#       configuration_aliases = [azurerm]
+#     }
+#   }
+# }
 
 
 resource "azurerm_firewall" "az-firewall" {
@@ -16,7 +16,7 @@ resource "azurerm_firewall" "az-firewall" {
   sku_name            = var.sku_name
   sku_tier            = var.sku_tier
   # Associating Azure Firewall with Firewall Manager Policy
-  firewall_policy_id  = azurerm_firewall_policy.az-firewall-pol01.id
+  firewall_policy_id = azurerm_firewall_policy.az-firewall-pol01.id
 
   ip_configuration {
     name                 = var.ipconfig_name
@@ -30,7 +30,7 @@ resource "azurerm_firewall_policy" "az-firewall-pol01" {
   name                = var.azure_firewall_policy_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  
+
 }
 
 # # Firewall Policy Rules
@@ -38,7 +38,7 @@ resource "azurerm_firewall_policy" "az-firewall-pol01" {
 #   name               = var.azure_firewall_policy_coll_group_name
 #   firewall_policy_id = azurerm_firewall_policy.az-firewall-pol01.id
 #   priority           = var.priority
-  
+
 #   network_rule_collection {
 #   name     = var.network_rule_coll_name_01
 #   priority = var.network_rule_coll_priority_01
@@ -54,7 +54,7 @@ resource "azurerm_firewall_policy" "az-firewall-pol01" {
 #             }
 #     }
 #   }
-  
+
 #   network_rule_collection {
 #   name     = var.network_rule_coll_name_02
 #   priority = var.network_rule_coll_priority_02

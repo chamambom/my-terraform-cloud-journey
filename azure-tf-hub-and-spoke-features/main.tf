@@ -395,7 +395,7 @@ module "spoke1-to-hub" {
 # Firewall Policy
 # Associate Firewall Policy with Azure Firewall
 # Network and Application Firewall Rules 
-module "azure_firewall_01" {
+module "azure_firewall" {
   source = "./modules/azure-firewall"
 
   depends_on = [module.hub-vnet]
@@ -410,7 +410,7 @@ module "azure_firewall_01" {
   subnet_id            = module.hub-vnet.vnet_subnet_id[2]
   public_ip_address_id = module.public_ip_03.public_ip_address_id
 
-  azure_firewall_policy_name = "afwpolicy-tpk-ae-001"
+  azure_firewall_policy_name = "afwpolicy-afritek-ae-001"
 
 }
 
@@ -564,8 +564,8 @@ module "public_ip_04" {
 
   # Used for Azure Bastion
   public_ip_name      = "pip-connectivity-hub-01"
-  resource_group_name = module.hub-resourcegroup.rg_name
-  location            = module.hub-resourcegroup.rg_location
+  resource_group_name = module.connectivity-resourcegroup.rg_name
+  location            = module.connectivity-resourcegroup.rg_location
   allocation_method   = "Static"
   sku                 = "Standard"
 
@@ -581,14 +581,14 @@ module "vm-bastion" {
   source = "./modules/azure-bastion"
 
   bastion_host_name   = "bas-connectivity-hub-01"
-  resource_group_name = module.hub-resourcegroup.rg_name
-  location            = module.hub-resourcegroup.rg_location
+  resource_group_name = module.connectivity-resourcegroup.rg_name
+  location            = module.connectivity-resourcegroup.rg_location
 
   ipconfig_name        = "configuration"
   subnet_id            = module.hub-vnet.vnet_subnet_id[1]
   public_ip_address_id = module.public_ip_04.public_ip_address_id
 
-  depends_on = [module.hub-vnet, module.azure_firewall_01]
+  depends_on = [module.hub-vnet, module.azure_firewall]
 
   # providers = {
   #   azurerm = azurerm.connectivity
@@ -604,8 +604,8 @@ module "public_ip_01" {
 
   # Used for VPN Gateway 
   public_ip_name      = "pip-connectivity-hub-02"
-  resource_group_name = module.hub-resourcegroup.rg_name
-  location            = module.hub-resourcegroup.rg_location
+  resource_group_name = module.connectivity-resourcegroup.rg_name
+  location            = module.connectivity-resourcegroup.rg_location
   allocation_method   = "Static"
   sku                 = "Standard"
 
@@ -620,8 +620,8 @@ module "vpn_gateway" {
   depends_on = [module.hub-vnet, module.azure_firewall_01]
 
   vpn_gateway_name    = "vpn-connectivity-hub-01"
-  location            = module.hub-resourcegroup.rg_location
-  resource_group_name = module.hub-resourcegroup.rg_name
+  location            = module.connectivity-resourcegroup.rg_location
+  resource_group_name = module.connectivity-resourcegroup.rg_name
 
   type     = "Vpn"
   vpn_type = "RouteBased"
@@ -643,9 +643,9 @@ module "vpn_gateway" {
 
 #########################################Begin Implementing Private DNS Zone####################################
 
-module "tpk-dnszone" {
+module "afritek-dnszone" {
   source              = "./modules/azure-dns-zone"
-  resource_group_name = module.hub-resourcegroup.rg_name
+  resource_group_name = module.connectivity-resourcegroup.rg_name
 
   # providers = {
   #   azurerm = azurerm.connectivity

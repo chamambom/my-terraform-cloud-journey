@@ -6,18 +6,18 @@
 #### Description: This script to deploy Azure Landing Zone            ####
 #### azurerm version = "~>3.0"                                        ####
 
-terraform {
- required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~>3.0"
-      configuration_aliases = [ azurerm ]
-    }
-  }
-}
+# terraform {
+#  required_providers {
+#     azurerm = {
+#       source  = "hashicorp/azurerm"
+#       version = "~>3.0"
+#       configuration_aliases = [ azurerm ]
+#     }
+#   }
+# }
 
 resource "random_id" "keyvault_id" {
-    byte_length = 8
+  byte_length = 8
 }
 
 data "azurerm_client_config" "current" {}

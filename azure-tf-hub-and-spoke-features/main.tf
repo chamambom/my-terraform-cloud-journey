@@ -422,7 +422,7 @@ module "azure_firewall_01" {
 
 # Resource Group Module is Used to Create Resource Groups
 module "ipgroups-resourcegroup" {
-  source = "./modules/resourcegroups"
+  source = "./modules/azure-resourcegroups"
   # Resource Group Variables
   rg_name     = "rg-ipgroups-001"
   rg_location = "australiaeast"
@@ -457,9 +457,9 @@ module "ip_groupC" {
   location            = "australiaeast"
   cidr_blocks         = ["10.210.6.0/28"]
 
-  providers = {
-    azurerm = azurerm.connectivity
-  }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
 }
 
 

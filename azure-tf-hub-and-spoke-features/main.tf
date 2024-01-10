@@ -422,7 +422,7 @@ module "azure_firewall_01" {
 
 # Resource Group Module is Used to Create Resource Groups
 module "ipgroups-resourcegroup" {
-  source = "./modules/azure-resourcegroups"
+  source = "./modules/azure-resourcegroup"
   # Resource Group Variables
   rg_name     = "rg-ipgroups-001"
   rg_location = "australiaeast"

@@ -7,9 +7,6 @@ module "workload-a-resourcegroup" {
   rg_name     = "rg-workload-a-prd-ae-001"
   rg_location = "australiaeast"
 
-  # providers = {
-  #   azurerm = azurerm.prod
-  # }
 }
 
 
@@ -399,7 +396,7 @@ module "spoke1-to-hub" {
 # Associate Firewall Policy with Azure Firewall
 # Network and Application Firewall Rules 
 module "azure_firewall_01" {
-  source     = "./modules/azure-firewall"
+  source = "./modules/azure-firewall"
 
   depends_on = [module.hub-vnet]
 
@@ -412,9 +409,9 @@ module "azure_firewall_01" {
   ipconfig_name        = "configuration"
   subnet_id            = module.hub-vnet.vnet_subnet_id[2]
   public_ip_address_id = module.public_ip_03.public_ip_address_id
-  
-  azure_firewall_policy_name            = "afwpolicy-tpk-ae-001"
-  
+
+  azure_firewall_policy_name = "afwpolicy-tpk-ae-001"
+
 }
 
 
@@ -427,46 +424,38 @@ module "azure_firewall_01" {
 module "ipgroups-resourcegroup" {
   source = "./modules/resourcegroups"
   # Resource Group Variables
-  az_rg_name     = "rg-ipgroups-001"
-  az_rg_location = "australiaeast"
-  providers = {
-    azurerm = azurerm.connectivity
-  }
+  rg_name     = "rg-ipgroups-001"
+  rg_location = "australiaeast"
+
 }
 
 module "ip_groupA" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
-  ip_group_name = "NPS_Radius_Servers"
+  ip_group_name       = "NPS_Radius_Servers"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location = "australiaeast"
-  cidr_blocks =  ["10.210.6.0/28"]
+  location            = "australiaeast"
+  cidr_blocks         = ["10.210.6.0/28"]
 
-  providers = {
-    azurerm = azurerm.connectivity
-  }
 }
 
 module "ip_groupB" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
-  ip_group_name = "AOVPN_Internal_Subnet"
+  ip_group_name       = "AOVPN_Internal_Subnet"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location = "australiaeast"
-  cidr_blocks =  ["10.210.4.0/27"]
+  location            = "australiaeast"
+  cidr_blocks         = ["10.210.4.0/27"]
 
-  providers = {
-    azurerm = azurerm.connectivity
-  }
 }
 
 module "ip_groupC" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
-  ip_group_name = "AD_Servers"
+  ip_group_name       = "AD_Servers"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location = "australiaeast"
-  cidr_blocks =  ["10.210.6.0/28"]
+  location            = "australiaeast"
+  cidr_blocks         = ["10.210.6.0/28"]
 
   providers = {
     azurerm = azurerm.connectivity
@@ -475,7 +464,7 @@ module "ip_groupC" {
 
 
 module "azure_firewall_rules" {
-  source     = "./modules/firewallrules"
+  source              = "./modules/azure-firewallrules"
   location            = "australiaeast"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
 
@@ -489,8 +478,8 @@ module "azure_firewall_rules" {
   network_rules_01 = [
     {
       name                  = "Blocked_rule_1"
-      source_ip_groups       = [module.ip_groupA.ip_group_id_out]
-      destination_ip_groups  = [module.ip_groupB.ip_group_id_out]
+      source_ip_groups      = [module.ip_groupA.ip_group_id_out]
+      destination_ip_groups = [module.ip_groupB.ip_group_id_out]
       destination_ports     = [11]
       protocols             = ["TCP"]
     },
@@ -503,36 +492,36 @@ module "azure_firewall_rules" {
   network_rules_02 = [
     {
       name                  = "NPS_Radius_Servers_Outbound"
-      source_ip_groups       = [module.ip_groupA.ip_group_id_out]
-      destination_ip_groups  = [module.ip_groupB.ip_group_id_out]
-      destination_ports     = [1812,1813,1645,1646]
-      protocols             = ["UDP","ICMP"]
+      source_ip_groups      = [module.ip_groupA.ip_group_id_out]
+      destination_ip_groups = [module.ip_groupB.ip_group_id_out]
+      destination_ports     = [1812, 1813, 1645, 1646]
+      protocols             = ["UDP", "ICMP"]
     },
-     {
+    {
       name                  = "NPS_Radius_Servers_Inbound"
-      source_ip_groups       = [module.ip_groupB.ip_group_id_out]
-      destination_ip_groups  = [module.ip_groupA.ip_group_id_out]
-      destination_ports     = [1812,1813,1645,1646]
-      protocols             = ["UDP","ICMP"]
+      source_ip_groups      = [module.ip_groupB.ip_group_id_out]
+      destination_ip_groups = [module.ip_groupA.ip_group_id_out]
+      destination_ports     = [1812, 1813, 1645, 1646]
+      protocols             = ["UDP", "ICMP"]
     },
     {
       name                  = "AD_Servers_Inbound"
-      source_ip_groups       = [module.ip_groupB.ip_group_id_out]
-      destination_ip_groups  = [module.ip_groupC.ip_group_id_out]
-      destination_ports     = [389,636,445,53,3268,3269,88,135,464,139,"49152-65535",88]
-      protocols             = ["UDP","TCP","ICMP"]
+      source_ip_groups      = [module.ip_groupB.ip_group_id_out]
+      destination_ip_groups = [module.ip_groupC.ip_group_id_out]
+      destination_ports     = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88]
+      protocols             = ["UDP", "TCP", "ICMP"]
     },
 
     {
       name                  = "AD_Servers_Outbound"
-      source_ip_groups       = [module.ip_groupC.ip_group_id_out]
-      destination_ip_groups  = [module.ip_groupB.ip_group_id_out]
-      destination_ports     = [389,636,445,53,3268,3269,88,135,464,139,"49152-65535",88]
-      protocols             = ["UDP","TCP","ICMP"]
+      source_ip_groups      = [module.ip_groupC.ip_group_id_out]
+      destination_ip_groups = [module.ip_groupB.ip_group_id_out]
+      destination_ports     = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88]
+      protocols             = ["UDP", "TCP", "ICMP"]
     },
 
   ]
-  
+
 
 
   application_rule_coll_name     = "Allowed_Services"
@@ -561,9 +550,9 @@ module "azure_firewall_rules" {
     }
   ]
 
-  providers = {
-    azurerm = azurerm.connectivity
-  }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
 
 }
 
@@ -571,7 +560,7 @@ module "azure_firewall_rules" {
 
 # publicip Module is used to create Public IP Address
 module "public_ip_04" {
-  source = "./modules/publicip"
+  source = "./modules/azure-publicip"
 
   # Used for Azure Bastion
   public_ip_name      = "pip-connectivity-hub-01"
@@ -580,16 +569,16 @@ module "public_ip_04" {
   allocation_method   = "Static"
   sku                 = "Standard"
 
-  providers = {
-    azurerm = azurerm.connectivity
-  }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
 
 }
 
 
 # bastion Module is used to create Bastion in Hub Virtual Network - To Console into Virtual Machines Securely
 module "vm-bastion" {
-  source = "./modules/bastion"
+  source = "./modules/azure-bastion"
 
   bastion_host_name   = "bas-connectivity-hub-01"
   resource_group_name = module.hub-resourcegroup.rg_name
@@ -601,9 +590,9 @@ module "vm-bastion" {
 
   depends_on = [module.hub-vnet, module.azure_firewall_01]
 
-  providers = {
-    azurerm = azurerm.connectivity
-  }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
 
 }
 
@@ -611,189 +600,187 @@ module "vm-bastion" {
 
 # publicip Module is used to create Public IP Address
 module "public_ip_01" {
-source = "./modules/publicip"
+  source = "./modules/azure-publicip"
 
-# Used for VPN Gateway 
-public_ip_name      = "pip-connectivity-hub-02"
-resource_group_name = module.hub-resourcegroup.rg_name
-location            = module.hub-resourcegroup.rg_location
-allocation_method   = "Static"
-sku                 = "Standard"
+  # Used for VPN Gateway 
+  public_ip_name      = "pip-connectivity-hub-02"
+  resource_group_name = module.hub-resourcegroup.rg_name
+  location            = module.hub-resourcegroup.rg_location
+  allocation_method   = "Static"
+  sku                 = "Standard"
 
-  providers = {
-    azurerm = azurerm.connectivity
-  }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
 }
 
 # vpn-gateway Module is used to create Express Route Gateway - So that it can connect to the express route Circuit
 module "vpn_gateway" {
-source = "./modules/vpn-gateway"
-depends_on = [module.hub-vnet , module.azure_firewall_01]
+  source     = "./modules/azure-vpn-gateway"
+  depends_on = [module.hub-vnet, module.azure_firewall_01]
 
-vpn_gateway_name              = "vpn-connectivity-hub-01"
-location                      = module.hub-resourcegroup.rg_location
-resource_group_name           = module.hub-resourcegroup.rg_name
+  vpn_gateway_name    = "vpn-connectivity-hub-01"
+  location            = module.hub-resourcegroup.rg_location
+  resource_group_name = module.hub-resourcegroup.rg_name
 
-type                          = "Vpn"
-vpn_type                      = "RouteBased"
+  type     = "Vpn"
+  vpn_type = "RouteBased"
 
-sku                           = "VpnGw2" 
-active_active                 = false
-enable_bgp                    = false
+  sku           = "VpnGw2"
+  active_active = false
+  enable_bgp    = false
 
-ip_configuration              = "default"
-private_ip_address_allocation = "Dynamic"
-subnet_id                     = module.hub-vnet.vnet_subnet_id[3]
-public_ip_address_id          = module.public_ip_01.public_ip_address_id
+  ip_configuration              = "default"
+  private_ip_address_allocation = "Dynamic"
+  subnet_id                     = module.hub-vnet.vnet_subnet_id[3]
+  public_ip_address_id          = module.public_ip_01.public_ip_address_id
 
-providers = {
-    azurerm = azurerm.connectivity
-  }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
 
 }
 
 #########################################Begin Implementing Private DNS Zone####################################
 
 module "tpk-dnszone" {
-  source              = "./modules/dns-zone"
+  source              = "./modules/azure-dns-zone"
   resource_group_name = module.hub-resourcegroup.rg_name
 
-  providers = {
-    azurerm = azurerm.connectivity
-  }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
 
 }
 
 #########################################Begin Implementing Private DNS Resolver####################################
 
 
-# Resource Group Module is Used to Create Resource Groups
-module "private-resolver-resourcegroup" {
-  source = "./modules/resourcegroups"
-  # Resource Group Variables
-  az_rg_name     = "rg-connectivity-adnspr-01"
-  az_rg_location = "australiaeast"
-
-  providers = {
-    azurerm = azurerm.connectivity
-  }
-}
+# # Resource Group Module is Used to Create Resource Groups
+# module "private-resolver-resourcegroup" {
+#   source = "./modules/resourcegroups"
+#   # Resource Group Variables
+#   rg_name     = "rg-connectivity-adnspr-01"
+#   rg_location = "australiaeast"
 
 
-# vnet Module is used to create Virtual Networks and Subnets
-module "dns-resolver-vnet" {
-  source = "./modules/vnet"
-
-  virtual_network_name          = "vnet-adnspr-vnet-01"
-  resource_group_name           = module.private-resolver-resourcegroup.rg_name
-  location                      = module.private-resolver-resourcegroup.rg_location
-  virtual_network_address_space = ["10.210.1.0/24"]
-
-  subnet_names = {}
-
-depends_on = [module.private-resolver-resourcegroup]
-
-  providers = {
-    azurerm = azurerm.connectivity
-  }
-}
+# }
 
 
-# Creating Inbound Subnet, note there is only support for two inbound endpoints per DNS Resolver, and they cannot share the same subnet.
-resource "azurerm_subnet" "inbound" {
-  provider = azurerm.connectivity
-  name                 = "snet-adnspr-inbound-01"
-  address_prefixes     = ["10.210.1.0/27"]
-  resource_group_name = module.private-resolver-resourcegroup.rg_name
-  virtual_network_name = module.dns-resolver-vnet.vnet_name
+# # vnet Module is used to create Virtual Networks and Subnets
+# module "dns-resolver-vnet" {
+#   source = "./modules/vnet"
 
-  delegation {
-    name = "Microsoft.Network.dnsResolvers"
-    service_delegation {
-      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-      name    = "Microsoft.Network/dnsResolvers"
-    }
-  }
+#   virtual_network_name          = "vnet-adnspr-vnet-01"
+#   resource_group_name           = module.private-resolver-resourcegroup.rg_name
+#   location                      = module.private-resolver-resourcegroup.rg_location
+#   virtual_network_address_space = ["10.210.1.0/24"]
 
-}
+#   subnet_names = {}
 
-# Creating Outbound Subnet, note there is only support for two outbound endpoints per DNS Resolver, and they cannot share the same subnet.
-resource "azurerm_subnet" "outbound" {
-  provider = azurerm.connectivity
-  name                 = "snet-adnspr-outbound-01"
-  address_prefixes     = ["10.210.1.32/27"]
-  resource_group_name = module.private-resolver-resourcegroup.rg_name
-  virtual_network_name = module.dns-resolver-vnet.vnet_name
+#   depends_on = [module.private-resolver-resourcegroup]
 
-  delegation {
-    name = "Microsoft.Network.dnsResolvers"
-    service_delegation {
-      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-      name    = "Microsoft.Network/dnsResolvers"
-    }
-  }
+#   # providers = {
+#   #   azurerm = azurerm.connectivity
+#   # }
+# }
 
 
-}
+# # Creating Inbound Subnet, note there is only support for two inbound endpoints per DNS Resolver, and they cannot share the same subnet.
+# resource "azurerm_subnet" "inbound" {
+#   provider             = azurerm.connectivity
+#   name                 = "snet-adnspr-inbound-01"
+#   address_prefixes     = ["10.210.1.0/27"]
+#   resource_group_name  = module.private-resolver-resourcegroup.rg_name
+#   virtual_network_name = module.dns-resolver-vnet.vnet_name
+
+#   delegation {
+#     name = "Microsoft.Network.dnsResolvers"
+#     service_delegation {
+#       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+#       name    = "Microsoft.Network/dnsResolvers"
+#     }
+#   }
+
+# }
+
+# # Creating Outbound Subnet, note there is only support for two outbound endpoints per DNS Resolver, and they cannot share the same subnet.
+# resource "azurerm_subnet" "outbound" {
+#   provider             = azurerm.connectivity
+#   name                 = "snet-adnspr-outbound-01"
+#   address_prefixes     = ["10.210.1.32/27"]
+#   resource_group_name  = module.private-resolver-resourcegroup.rg_name
+#   virtual_network_name = module.dns-resolver-vnet.vnet_name
+
+#   delegation {
+#     name = "Microsoft.Network.dnsResolvers"
+#     service_delegation {
+#       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+#       name    = "Microsoft.Network/dnsResolvers"
+#     }
+#   }
 
 
-module "dns-private-resolver" {
-  source              = "./modules/azure-private-dns-resolver"
-  resource_group_name = module.private-resolver-resourcegroup.rg_name
-  location            = module.private-resolver-resourcegroup.rg_location
-  dns_resolver_name   = "dnspr-connectivity-adnspr-01"
-  virtual_network_id  = module.dns-resolver-vnet.vnet_id
+# }
 
-  dns_resolver_inbound_endpoints = [
-    # There is currently only support for two Inbound endpoints per Private Resolver.
-    {
-      inbound_endpoint_name = "inbound"
-      inbound_subnet_id     = azurerm_subnet.inbound.id
-    }
-  ]
 
-  dns_resolver_outbound_endpoints = [
-    # There is currently only support for two Outbound endpoints per Private Resolver.
-    {
-      outbound_endpoint_name = "outbound"
-      outbound_subnet_id     = azurerm_subnet.outbound.id
-      forwarding_rulesets = [
-        # There is currently only support for two DNS forwarding rulesets per outbound endpoint.
-        {
-          forwarding_ruleset_name = "default-ruleset"
-        }
-      ]
-    }
-  ]
+# module "dns-private-resolver" {
+#   source              = "./modules/azure-private-dns-resolver"
+#   resource_group_name = module.private-resolver-resourcegroup.rg_name
+#   location            = module.private-resolver-resourcegroup.rg_location
+#   dns_resolver_name   = "dnspr-connectivity-adnspr-01"
+#   virtual_network_id  = module.dns-resolver-vnet.vnet_id
 
-    providers = {
-    azurerm = azurerm.connectivity
-}
-}
+#   dns_resolver_inbound_endpoints = [
+#     # There is currently only support for two Inbound endpoints per Private Resolver.
+#     {
+#       inbound_endpoint_name = "inbound"
+#       inbound_subnet_id     = azurerm_subnet.inbound.id
+#     }
+#   ]
+
+#   dns_resolver_outbound_endpoints = [
+#     # There is currently only support for two Outbound endpoints per Private Resolver.
+#     {
+#       outbound_endpoint_name = "outbound"
+#       outbound_subnet_id     = azurerm_subnet.outbound.id
+#       forwarding_rulesets = [
+#         # There is currently only support for two DNS forwarding rulesets per outbound endpoint.
+#         {
+#           forwarding_ruleset_name = "default-ruleset"
+#         }
+#       ]
+#     }
+#   ]
+
+# providers = {
+#   azurerm = azurerm.connectivity
+# }
+#}
 
 ###########################################################
 # Testing rule creation within the rule set created above #
 ###########################################################
 
-resource "azurerm_private_dns_resolver_forwarding_rule" "tpk_nz" {
-   provider = azurerm.connectivity
-  name                      = "dnsrs-shared-dns-aue-001" # Can only contain letters, numbers, underscores, and/or dashes, and should start with a letter.
-  dns_forwarding_ruleset_id = module.dns-private-resolver.dns_resolver.dns_outbound_endpoints.outbound.dns_forwarding_rulesets.outbound-default-ruleset.ruleset_id
-  domain_name               = "azure.tpk.co.nz." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
-  enabled                   = true
-  target_dns_servers {
-    ip_address = "10.0.0.3"
-    port       = 53
-  }
-  target_dns_servers {
-    ip_address = "10.0.0.4"
-    port       = 53
-  }
+# resource "azurerm_private_dns_resolver_forwarding_rule" "tpk_nz" {
+#   provider                  = azurerm.connectivity
+#   name                      = "dnsrs-shared-dns-aue-001" # Can only contain letters, numbers, underscores, and/or dashes, and should start with a letter.
+#   dns_forwarding_ruleset_id = module.dns-private-resolver.dns_resolver.dns_outbound_endpoints.outbound.dns_forwarding_rulesets.outbound-default-ruleset.ruleset_id
+#   domain_name               = "azure.tpk.co.nz." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
+#   enabled                   = true
+#   target_dns_servers {
+#     ip_address = "10.0.0.3"
+#     port       = 53
+#   }
+#   target_dns_servers {
+#     ip_address = "10.0.0.4"
+#     port       = 53
+#   }
 
-  depends_on = [
-    module.dns-private-resolver
-  ]
-}
+#   depends_on = [
+#     module.dns-private-resolver
+#   ]
+# }
 
 ##################################################################################
 # Testing: Adding Inbound Endpoint private ip as Custom DNS Server Configuration #

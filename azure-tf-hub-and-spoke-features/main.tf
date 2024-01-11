@@ -390,6 +390,21 @@ module "spoke1-to-hub" {
 
 }
 
+# publicip Module is used to create Public IP Address
+module "public_ip_03" {
+  source = "./modules/azure-publicip"
+
+  # Used for VPN Gateway 
+  public_ip_name      = "pip-connectivity-hub-02"
+  resource_group_name = module.connectivity-resourcegroup.rg_name
+  location            = module.connectivity-resourcegroup.rg_location
+  allocation_method   = "Static"
+  sku                 = "Standard"
+
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
 
 # azurefirewall Module is used to create Azure Firewall 
 # Firewall Policy

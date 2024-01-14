@@ -11,6 +11,11 @@ variable "azure_firewall_policy_name" {
   description = "The full Azure resource ID of the remote virtual network."
 }
 
+variable "azure_firewall_policy_id" {
+  description = "The full Azure resource ID of the remote virtual network."
+}
+
+
 variable "azure_firewall_policy_coll_group_name" {
   description = "The full Azure resource ID of the remote virtual network."
 }

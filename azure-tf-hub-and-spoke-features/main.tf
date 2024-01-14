@@ -416,13 +416,13 @@ module "azure_firewall" {
   depends_on = [module.hub-vnet]
 
   azure_firewall_name = "afw-connectivity-hub-01"
-  location            = module.hub-resourcegroup.rg_location
-  resource_group_name = module.hub-resourcegroup.rg_name
+  location            = module.connectivity-resourcegroup.rg_location
+  resource_group_name = module.connectivity-resourcegroup.rg_name
   sku_name            = "AZFW_VNet"
   sku_tier            = "Standard"
 
   ipconfig_name        = "configuration"
-  subnet_id            = module.hub-vnet.vnet_subnet_id[2]
+  subnet_id            = module.hub-vnet.subnet_ids[2]
   public_ip_address_id = module.public_ip_03.public_ip_address_id
 
   azure_firewall_policy_name = "afwpolicy-afritek-ae-001"
@@ -485,6 +485,7 @@ module "azure_firewall_rules" {
 
   azure_firewall_policy_coll_group_name = "afwpolicy-collection-group-tpk-ae-001"
   azure_firewall_policy_name            = "afwpolicy-tpk-ae-001"
+  azure_firewall_policy_id              = module.azure_firewall.azure_firewall_policy_id_out
   priority                              = 100
 
   network_rule_coll_name_01     = "Blocked_Network_Rules"
@@ -600,7 +601,7 @@ module "vm-bastion" {
   location            = module.connectivity-resourcegroup.rg_location
 
   ipconfig_name        = "configuration"
-  subnet_id            = module.hub-vnet.vnet_subnet_id[1]
+  subnet_id            = module.hub-vnet.subnet_ids[1]
   public_ip_address_id = module.public_ip_04.public_ip_address_id
 
   depends_on = [module.hub-vnet, module.azure_firewall]
@@ -632,7 +633,7 @@ module "public_ip_01" {
 # vpn-gateway Module is used to create Express Route Gateway - So that it can connect to the express route Circuit
 module "vpn_gateway" {
   source     = "./modules/azure-vpn-gateway"
-  depends_on = [module.hub-vnet, module.azure_firewall_01]
+  depends_on = [module.hub-vnet, module.azure_firewall]
 
   vpn_gateway_name    = "vpn-connectivity-hub-01"
   location            = module.connectivity-resourcegroup.rg_location
@@ -647,7 +648,7 @@ module "vpn_gateway" {
 
   ip_configuration              = "default"
   private_ip_address_allocation = "Dynamic"
-  subnet_id                     = module.hub-vnet.vnet_subnet_id[3]
+  subnet_id                     = module.hub-vnet.subnet_ids[1]
   public_ip_address_id          = module.public_ip_01.public_ip_address_id
 
   # providers = {

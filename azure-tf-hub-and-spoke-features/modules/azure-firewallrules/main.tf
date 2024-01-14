@@ -11,19 +11,12 @@
 
 
 
-#Firewall Policy
-data "azurerm_firewall_policy" "tpkfwpolicy" {
-  name                = "afwpolicy-tpk-ae-001"
-  resource_group_name = "rg-connectivity-hub-01"
-}
-
-
 # Firewall Policy Rules
 resource "azurerm_firewall_policy_rule_collection_group" "az-collection-pol01" {
   name = var.azure_firewall_policy_coll_group_name
 
   #Associating Azure Firewall with Firewall Manager Policy
-  firewall_policy_id = data.azurerm_firewall_policy.tpkfwpolicy.id
+  firewall_policy_id = var.azure_firewall_policy_id
   priority           = var.priority
 
   network_rule_collection {

@@ -48,6 +48,7 @@ module "hub-vnet" {
 
   firewall_subnet_address_prefix = ["10.210.0.0/26"]
   gateway_subnet_address_prefix  = ["10.210.0.64/26"]
+  bastion_subnet_address_prefix  = ["10.210.0.128/26"]
   create_network_watcher         = false
 
   # Adding Standard DDoS Plan, and custom DNS servers (Optional)
@@ -62,7 +63,7 @@ module "hub-vnet" {
   subnets = {
     mgnt_subnet = {
       subnet_name           = "snet-management"
-      subnet_address_prefix = ["10.210.0.128/27"]
+      subnet_address_prefix = ["10.210.0.192/28"]
 
       delegation = {
         name = "testdelegation"
@@ -89,7 +90,7 @@ module "hub-vnet" {
 
     dmz_subnet = {
       subnet_name           = "snet-appgateway"
-      subnet_address_prefix = ["10.210.0.160/27"]
+      subnet_address_prefix = ["10.210.0.208/28"]
       service_endpoints     = ["Microsoft.Storage"]
 
       nsg_inbound_rules = [
@@ -108,7 +109,7 @@ module "hub-vnet" {
 
     pvt_subnet = {
       subnet_name           = "snet-pvt"
-      subnet_address_prefix = ["10.210.0.192/27"]
+      subnet_address_prefix = ["10.210.0.224/28"]
       service_endpoints     = ["Microsoft.Storage"]
     }
   }
@@ -601,7 +602,7 @@ module "vm-bastion" {
   location            = module.connectivity-resourcegroup.rg_location
 
   ipconfig_name        = "configuration"
-  subnet_id            = module.hub-vnet.subnet_ids[1]
+  subnet_id            = module.hub-vnet.subnet_ids[2]
   public_ip_address_id = module.public_ip_04.public_ip_address_id
 
   depends_on = [module.hub-vnet, module.azure_firewall]

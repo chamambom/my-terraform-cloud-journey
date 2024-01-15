@@ -105,6 +105,15 @@ resource "azurerm_subnet" "gw_snet" {
   service_endpoints    = var.gateway_service_endpoints
 }
 
+resource "azurerm_subnet" "bs_snet" {
+  count                = var.bastion_subnet_address_prefix != null ? 1 : 0
+  name                 = "AzureBastionSubnet"
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = var.bastion_subnet_address_prefix #[cidrsubnet(element(var.vnet_address_space, 0), 8, 1)]
+  service_endpoints    = var.bastion_service_endpoints
+}
+
 resource "azurerm_subnet" "snet" {
   for_each                                      = var.subnets
   name                                          = each.value.subnet_name

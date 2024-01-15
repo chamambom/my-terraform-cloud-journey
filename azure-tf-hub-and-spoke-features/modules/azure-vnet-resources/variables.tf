@@ -58,6 +58,13 @@ variable "firewall_subnet_address_prefix" {
   default     = null
 }
 
+variable "bastion_subnet_address_prefix" {
+  description = "The address prefix to use for the Bastion subnet"
+  default     = null
+}
+
+
+
 variable "firewall_service_endpoints" {
   description = "Service endpoints to add to the firewall subnet"
   type        = list(string)
@@ -77,6 +84,13 @@ variable "gateway_service_endpoints" {
   type        = list(string)
   default     = []
 }
+
+variable "bastion_service_endpoints" {
+  description = "Service endpoints to add to the Bastion subnet"
+  type        = list(string)
+  default     = []
+}
+
 
 variable "tags" {
   description = "A map of tags to add to all resources"

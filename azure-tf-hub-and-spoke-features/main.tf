@@ -395,8 +395,8 @@ module "spoke1-to-hub" {
 module "public_ip_03" {
   source = "./modules/azure-publicip"
 
-  # Used for VPN Gateway 
-  public_ip_name      = "pip-connectivity-hub-02"
+  # Used for Azure Firewall
+  public_ip_name      = "pip-azure-firewall-01"
   resource_group_name = module.connectivity-resourcegroup.rg_name
   location            = module.connectivity-resourcegroup.rg_location
   allocation_method   = "Static"
@@ -580,7 +580,7 @@ module "public_ip_04" {
   source = "./modules/azure-publicip"
 
   # Used for Azure Bastion
-  public_ip_name      = "pip-connectivity-hub-01"
+  public_ip_name      = "pip-bastion-01"
   resource_group_name = module.connectivity-resourcegroup.rg_name
   location            = module.connectivity-resourcegroup.rg_location
   allocation_method   = "Static"
@@ -620,7 +620,7 @@ module "public_ip_01" {
   source = "./modules/azure-publicip"
 
   # Used for VPN Gateway 
-  public_ip_name      = "pip-connectivity-hub-02"
+  public_ip_name      = "pip-vgw-02"
   resource_group_name = module.connectivity-resourcegroup.rg_name
   location            = module.connectivity-resourcegroup.rg_location
   allocation_method   = "Static"

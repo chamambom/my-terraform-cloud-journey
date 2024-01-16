@@ -24,7 +24,7 @@ module "workload-b-resourcegroup" {
 module "connectivity-resourcegroup" {
   source = "./modules/azure-resourcegroup"
   # Resource Group Variables
-  rg_name     = "rg-shared-ae-001"
+  rg_name     = "rg-shared-resources-ae-001"
   rg_location = "australiaeast"
 
   # providers = {

@@ -345,51 +345,51 @@ module "route-table-workload-b" {
   # }
 }
 
-####################################################################################
-#              Spokes Module is Used to route tables            
-####################################################################################
+# ####################################################################################
+# #              Spokes Module is Used to route tables            
+# ####################################################################################
 
-# vnet-peering Module is used to create peering between Virtual Networks
-module "hub-to-spoke1" {
-  source = "./modules/azure-vnet-peering"
-
-
-  virtual_network_peering_name = "vnet-hub-to-vnet-workload-a"
-  resource_group_name          = module.connectivity-resourcegroup.rg_name
-  virtual_network_name         = module.hub-vnet.virtual_network_name
-  remote_virtual_network_id    = module.spoke1-vnet.virtual_network_id
-  allow_virtual_network_access = "true"
-  allow_forwarded_traffic      = "true"
-  allow_gateway_transit        = "true"
-  use_remote_gateways          = "false"
-
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-
-}
-
-# vnet-peering Module is used to create peering between Virtual Networks
-module "spoke1-to-hub" {
-  source = "./modules/azure-vnet-peering"
-
-  virtual_network_peering_name = "vnet-workload-a-to-vnet-hub"
-  resource_group_name          = module.workload-a-resourcegroup.rg_name
-  virtual_network_name         = module.spoke1-vnet.virtual_network_name
-  remote_virtual_network_id    = module.hub-vnet.virtual_network_id
-  allow_virtual_network_access = "true"
-  allow_forwarded_traffic      = "true"
-  allow_gateway_transit        = "false"
-  # As there is no gateway while testing - Setting to False
-  #use_remote_gateways   = "true"
-  use_remote_gateways = "false"
+# # vnet-peering Module is used to create peering between Virtual Networks
+# module "hub-to-spoke1" {
+#   source = "./modules/azure-vnet-peering"
 
 
-  # providers = {
-  #   azurerm = azurerm.prod
-  # }
+#   virtual_network_peering_name = "vnet-hub-to-vnet-workload-a"
+#   resource_group_name          = module.connectivity-resourcegroup.rg_name
+#   virtual_network_name         = module.hub-vnet.virtual_network_name
+#   remote_virtual_network_id    = module.spoke1-vnet.virtual_network_id
+#   allow_virtual_network_access = "true"
+#   allow_forwarded_traffic      = "true"
+#   allow_gateway_transit        = "true"
+#   use_remote_gateways          = "false"
 
-}
+#   # providers = {
+#   #   azurerm = azurerm.connectivity
+#   # }
+
+# }
+
+# # vnet-peering Module is used to create peering between Virtual Networks
+# module "spoke1-to-hub" {
+#   source = "./modules/azure-vnet-peering"
+
+#   virtual_network_peering_name = "vnet-workload-a-to-vnet-hub"
+#   resource_group_name          = module.workload-a-resourcegroup.rg_name
+#   virtual_network_name         = module.spoke1-vnet.virtual_network_name
+#   remote_virtual_network_id    = module.hub-vnet.virtual_network_id
+#   allow_virtual_network_access = "true"
+#   allow_forwarded_traffic      = "true"
+#   allow_gateway_transit        = "false"
+#   # As there is no gateway while testing - Setting to False
+#   #use_remote_gateways   = "true"
+#   use_remote_gateways = "false"
+
+
+#   # providers = {
+#   #   azurerm = azurerm.prod
+#   # }
+
+# }
 
 # publicip Module is used to create Public IP Address
 module "public_ip_03" {

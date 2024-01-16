@@ -60,59 +60,59 @@ module "hub-vnet" {
   # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets.
   # ex.: For 10.1.0.0/16 address space, usable address range start from 10.1.2.0/24 for all subnets.
   # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
-  subnets = {
-    mgnt_subnet = {
-      subnet_name           = "snet-management"
-      subnet_address_prefix = ["10.210.0.192/28"]
+  # subnets = {
+  #   mgnt_subnet = {
+  #     subnet_name           = "snet-management"
+  #     subnet_address_prefix = ["10.210.0.192/28"]
 
-      delegation = {
-        name = "testdelegation"
-        service_delegation = {
-          name    = "Microsoft.ContainerInstance/containerGroups"
-          actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"]
-        }
-      }
+  #     delegation = {
+  #       name = "testdelegation"
+  #       service_delegation = {
+  #         name    = "Microsoft.ContainerInstance/containerGroups"
+  #         actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"]
+  #       }
+  #     }
 
-      nsg_inbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any values.
-        ["weballow", "100", "Inbound", "Allow", "Tcp", "80", "*", "0.0.0.0/0"],
-        ["weballow1", "101", "Inbound", "Allow", "", "443", "*", ""],
-        ["weballow2", "102", "Inbound", "Allow", "Tcp", "8080-8090", "*", ""],
-      ]
+  #     nsg_inbound_rules = [
+  #       # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+  #       # To use defaults, use "" without adding any values.
+  #       ["weballow", "100", "Inbound", "Allow", "Tcp", "80", "*", "0.0.0.0/0"],
+  #       ["weballow1", "101", "Inbound", "Allow", "", "443", "*", ""],
+  #       ["weballow2", "102", "Inbound", "Allow", "Tcp", "8080-8090", "*", ""],
+  #     ]
 
-      nsg_outbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any values.
-        ["ntp_out", "103", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
-      ]
-    }
+  #     nsg_outbound_rules = [
+  #       # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+  #       # To use defaults, use "" without adding any values.
+  #       ["ntp_out", "103", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
+  #     ]
+  #   }
 
-    dmz_subnet = {
-      subnet_name           = "snet-appgateway"
-      subnet_address_prefix = ["10.210.0.208/28"]
-      service_endpoints     = ["Microsoft.Storage"]
+  #   dmz_subnet = {
+  #     subnet_name           = "snet-appgateway"
+  #     subnet_address_prefix = ["10.210.0.208/28"]
+  #     service_endpoints     = ["Microsoft.Storage"]
 
-      nsg_inbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any values.
-        ["weballow", "200", "Inbound", "Allow", "Tcp", "80", "*", ""],
-        ["weballow1", "201", "Inbound", "Allow", "Tcp", "443", "AzureLoadBalancer", ""],
-        ["weballow2", "202", "Inbound", "Allow", "Tcp", "9090", "VirtualNetwork", ""],
-      ]
+  #     nsg_inbound_rules = [
+  #       # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+  #       # To use defaults, use "" without adding any values.
+  #       ["weballow", "200", "Inbound", "Allow", "Tcp", "80", "*", ""],
+  #       ["weballow1", "201", "Inbound", "Allow", "Tcp", "443", "AzureLoadBalancer", ""],
+  #       ["weballow2", "202", "Inbound", "Allow", "Tcp", "9090", "VirtualNetwork", ""],
+  #     ]
 
-      nsg_outbound_rules = [
-        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
-        # To use defaults, use "" without adding any values.
-      ]
-    }
+  #     nsg_outbound_rules = [
+  #       # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+  #       # To use defaults, use "" without adding any values.
+  #     ]
+  #   }
 
-    pvt_subnet = {
-      subnet_name           = "snet-pvt"
-      subnet_address_prefix = ["10.210.0.224/28"]
-      service_endpoints     = ["Microsoft.Storage"]
-    }
-  }
+  #   pvt_subnet = {
+  #     subnet_name           = "snet-pvt"
+  #     subnet_address_prefix = ["10.210.0.224/28"]
+  #     service_endpoints     = ["Microsoft.Storage"]
+  #   }
+  # }
 
   # Adding TAG's to your Azure resources (Required)
   tags = {
@@ -602,7 +602,7 @@ module "vm-bastion" {
   location            = module.connectivity-resourcegroup.rg_location
 
   ipconfig_name        = "configuration"
-  subnet_id            = module.hub-vnet.subnet_ids[2]
+  subnet_id            = module.hub-vnet.subnet_ids[0]
   public_ip_address_id = module.public_ip_04.public_ip_address_id
 
   depends_on = [module.hub-vnet, module.azure_firewall]

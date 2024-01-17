@@ -300,25 +300,25 @@ module "spoke2-vnet" {
 #              Route table Module is Used to route tables            
 ####################################################################################
 
-# module "route-table-workload-a" {
-#   source              = "./modules/azure-route-table"
-#   name                = "rt-workload-a-afwroute-001"
-#   resource_group_name = module.workload-a-resourcegroup.rg_name
-#   location            = "australiaeast"
-#   routes = [
-#     { name = "ToFortigateFirewall", address_prefix = "0.0.0.0/0", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" }
-#   ]
-#   disable_bgp_route_propagation = true
+module "route-table-workload-a" {
+  source              = "./modules/azure-route-table"
+  name                = "rt-workload-a-afwroute-001"
+  resource_group_name = module.workload-a-resourcegroup.rg_name
+  location            = "australiaeast"
+  routes = [
+    { name = "ToFortigateFirewall", address_prefix = "0.0.0.0/0", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" }
+  ]
+  disable_bgp_route_propagation = true
 
-#   subnet_ids = module.spoke1-vnet.subnet_ids
+  subnet_ids = module.spoke1-vnet.subnet_ids
 
-#   depends_on = [module.hub-vnet, module.spoke1-vnet, module.spoke2-vnet]
+  depends_on = [module.hub-vnet, module.spoke1-vnet, module.spoke2-vnet]
 
-#   #   providers = {
-#   #   azurerm = azurerm.prod
-#   # }
+  #   providers = {
+  #   azurerm = azurerm.prod
+  # }
 
-# }
+}
 
 
 # module "route-table-workload-b" {

@@ -33,6 +33,7 @@ variable "disable_bgp_route_propagation" {
 # }
 
 variable "subnet_ids" {
-  type = list(any)
+  type    = list(any)
+  default = [3, 4, 5]
 
 }

@@ -173,7 +173,7 @@ module "spoke1-vnet" {
       ]
     }
 
-    dmz_subnet = {
+    app_subnet = {
       subnet_name           = "snet-appgateway"
       subnet_address_prefix = ["10.220.0.64/27"]
       service_endpoints     = ["Microsoft.Storage"]
@@ -258,7 +258,7 @@ module "spoke2-vnet" {
       ]
     }
 
-    dmz_subnet = {
+    app_subnet = {
       subnet_name           = "snet-appgateway"
       subnet_address_prefix = ["10.230.0.64/27"]
       service_endpoints     = ["Microsoft.Storage"]
@@ -312,7 +312,7 @@ module "route-table-workload-a" {
 
   subnet_ids = module.spoke1-vnet.subnet_ids
 
-  depends_on = [module.hub-vnet, module.spoke1-vnet, module.spoke2-vnet]
+  depends_on = [module.hub-vnet, module.spoke1-vnet, ]
 
   #   providers = {
   #   azurerm = azurerm.prod

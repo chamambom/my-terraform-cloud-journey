@@ -28,15 +28,15 @@ output "virtual_network_address_space" {
   value       = element(coalescelist(azurerm_virtual_network.vnet.*.address_space, [""]), 0)
 }
 
-output "subnet_ids" {
+output "subnet_ids_hub" {
   description = "List of IDs of subnets"
-  value       = flatten(concat([for s in azurerm_subnet.snet : s.id], [var.bastion_subnet_address_prefix != null ? azurerm_subnet.bs_snet.0.id : null], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null], [var.firewall_subnet_address_prefix != null ? azurerm_subnet.fw-snet.0.id : null]))
+  value       = flatten(concat([var.bastion_subnet_address_prefix != null ? azurerm_subnet.bs_snet.0.id : null], [var.gateway_subnet_address_prefix != null ? azurerm_subnet.gw_snet.0.id : null], [var.firewall_subnet_address_prefix != null ? azurerm_subnet.fw-snet.0.id : null]))
 }
 
-# output "subnet_ids" {
-#   description = "List of IDs of subnets"
-#   value       = flatten(concat([for s in azurerm_subnet.snet : s.id]))
-# }
+output "subnet_ids_spokes" {
+  description = "List of IDs of subnets"
+  value       = flatten(concat([for s in azurerm_subnet.snet : s.id]))
+}
 
 output "subnet_address_prefixes" {
   description = "List of address prefix for subnets"

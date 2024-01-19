@@ -310,7 +310,7 @@ module "route-table-workload-a" {
   ]
   disable_bgp_route_propagation = true
 
-  subnet_ids = module.spoke1-vnet.subnet_ids
+  subnet_ids = module.spoke1-vnet.subnet_id_spokes
 
   depends_on = [module.hub-vnet, module.spoke1-vnet, ]
 
@@ -423,7 +423,7 @@ module "azure_firewall" {
   sku_tier            = "Standard"
 
   ipconfig_name        = "configuration"
-  subnet_id            = module.hub-vnet.subnet_ids[2]
+  subnet_id            = module.hub-vnet.subnet_ids_hub[2]
   public_ip_address_id = module.public_ip_03.public_ip_address_id
 
   azure_firewall_policy_name = "afwpolicy-afritek-ae-001"
@@ -602,7 +602,7 @@ module "vm-bastion" {
   location            = module.connectivity-resourcegroup.rg_location
 
   ipconfig_name        = "configuration"
-  subnet_id            = module.hub-vnet.subnet_ids[0]
+  subnet_id            = module.hub-vnet.subnet_ids_hub[0]
   public_ip_address_id = module.public_ip_04.public_ip_address_id
 
   depends_on = [module.hub-vnet, module.azure_firewall]
@@ -649,14 +649,14 @@ module "vpn_gateway" {
 
   ip_configuration              = "default"
   private_ip_address_allocation = "Dynamic"
-  subnet_id                     = module.hub-vnet.subnet_ids[1]
+  subnet_id                     = module.hub-vnet.subnet_ids_hub[1]
   public_ip_address_id          = module.public_ip_01.public_ip_address_id
 
   # providers = {
   #   azurerm = azurerm.connectivity
   # }
 
-}
+} 
 
 #########################################Begin Implementing Private DNS Zone####################################
 

@@ -13,6 +13,7 @@ resource "azurerm_route_table" "rt" {
   name                = var.name
   location            = var.location
   resource_group_name = var.resource_group_name
+
   dynamic "route" {
     for_each = var.routes
     content {
@@ -29,7 +30,7 @@ resource "azurerm_route_table" "rt" {
 # resource "azurerm_subnet_route_table_association" "spoke-to-firewall" {
 #   for_each       = var.subnet_ids
 #   subnet_id      = each.value
-#   route_table_id = azurerm_route_table.rt.id
+#   route_table_id = azurerm_route_table.rt.id 
 # }
 
 

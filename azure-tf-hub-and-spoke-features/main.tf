@@ -459,6 +459,19 @@ module "ip_groupA" {
 
 }
 
+
+# ipgroup = [
+#   { ip_group_name = "NPS_Radius_Servers_1", resource_group_name = "werwerwrwrwerwrw", location = "australiaeast", cidr_blocks = ["10.210.6.0/28"] },
+#   { ip_group_name = "NPS_Radius_Servers_2", resource_group_name = "ddfgdgfdgfdgfdgd", location = "australiaeast", cidr_blocks = ["10.210.6.0/28"] },
+# ]
+
+# variable "routes" {
+#   type        = list(map(string))
+#   default     = []
+#   description = "List of objects that represent the configuration of each route."
+#   /*ROUTES = [{ name = "", address_prefix = "", next_hop_type = "", next_hop_in_ip_address = "" }]*/
+# }
+
 module "ip_groupB" {
   source = "./modules/azure-ipgroups"
 

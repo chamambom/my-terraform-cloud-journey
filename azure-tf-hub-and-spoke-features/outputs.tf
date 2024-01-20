@@ -32,7 +32,7 @@ output "virtual_network_address_space" {
 
 output "subnet_ids" {
   description = "List of IDs of subnets"
-  value       = module.spoke1-vnet.subnet_ids
+  value       = module.spoke1-vnet.subnet_ids_spokes
 }
 
 

@@ -1,5 +1,5 @@
 ####################################################################################
-#              Resource Group Module is Used to Create Resource Groups            
+#              Resource Group Module is Used to Create Resource Groups             # 
 ####################################################################################
 module "workload-a-resourcegroup" {
   source = "./modules/azure-resourcegroup"
@@ -33,7 +33,7 @@ module "connectivity-resourcegroup" {
 }
 
 ####################################################################################
-#              virtual network Module is Used to vnets and subnets            
+#              virtual network Module is Used to vnets and subnets                 #
 ####################################################################################
 
 module "hub-vnet" {
@@ -259,7 +259,7 @@ module "spoke2-vnet" {
     }
 
     app_subnet = {
-      subnet_name           = "snet-appgateway"
+      subnet_name           = "snet-appsubnet"
       subnet_address_prefix = ["10.230.0.64/27"]
       service_endpoints     = ["Microsoft.Storage"]
 
@@ -278,7 +278,7 @@ module "spoke2-vnet" {
     }
 
     pvt_subnet = {
-      subnet_name           = "snet-pvt"
+      subnet_name           = "snet-private"
       subnet_address_prefix = ["10.230.0.96/27"]
       service_endpoints     = ["Microsoft.Storage"]
     }
@@ -297,7 +297,7 @@ module "spoke2-vnet" {
 
 
 ####################################################################################
-#              Route table Module is Used to route tables            
+#              Route table Module is Used to route tables                          #
 ####################################################################################
 
 module "route-table-workload-a" {
@@ -310,7 +310,7 @@ module "route-table-workload-a" {
   ]
   disable_bgp_route_propagation = true
 
-  subnet_ids = module.spoke1-vnet.subnet_id_spokes
+  subnet_ids = module.spoke1-vnet.subnet_ids_spokes
 
   depends_on = [module.hub-vnet, module.spoke1-vnet, ]
 
@@ -321,32 +321,32 @@ module "route-table-workload-a" {
 }
 
 
-# module "route-table-workload-b" {
-#   source              = "./modules/azure-route-table"
-#   name                = "rt-workload-b-afwroute-001"
-#   resource_group_name = module.workload-b-resourcegroup.rg_name
-#   location            = "australiaeast"
-#   routes = [
-#     { name = "ToFortigateFirewall", address_prefix = "10.0.0.0/8", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
-#     { name = "WANA", address_prefix = "59.153.21.0/24", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
-#     { name = "WANB", address_prefix = "202.49.24.0/23", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
-#     { name = "WANC", address_prefix = "202.49.26.0/24", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" }
-#   ]
+module "route-table-workload-b" {
+  source              = "./modules/azure-route-table"
+  name                = "rt-workload-b-afwroute-001"
+  resource_group_name = module.workload-b-resourcegroup.rg_name
+  location            = "australiaeast"
+  routes = [
+    { name = "ToFortigateFirewall", address_prefix = "10.0.0.0/8", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
+    { name = "WANA", address_prefix = "59.153.21.0/24", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
+    { name = "WANB", address_prefix = "202.49.24.0/23", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" },
+    { name = "WANC", address_prefix = "202.49.26.0/24", next_hop_type = "VirtualAppliance", next_hop_in_ip_address = "10.50.0.68" }
+  ]
 
-#   disable_bgp_route_propagation = true
+  disable_bgp_route_propagation = true
 
-#   subnet_ids = module.spoke2-vnet.subnet_ids
+  subnet_ids = module.spoke2-vnet.subnet_ids_spokes
 
-#   depends_on = [module.hub-vnet, module.spoke1-vnet, module.spoke2-vnet]
+  depends_on = [module.hub-vnet, module.spoke2-vnet]
 
 
-#   #   providers = {
-#   #   azurerm = azurerm.shared
-#   # }
-# }
+  #   providers = {
+  #   azurerm = azurerm.shared
+  # }
+}
 
 ####################################################################################
-#              Spokes Module is Used to route tables            
+#              VNET PEERING                                                        #
 ####################################################################################
 
 # vnet-peering Module is used to create peering between Virtual Networks
@@ -391,6 +391,10 @@ module "spoke1-to-hub" {
 
 }
 
+####################################################################################
+#              AZURE FIREWALL                                                     #
+####################################################################################
+
 # publicip Module is used to create Public IP Address
 module "public_ip_03" {
   source = "./modules/azure-publicip"
@@ -431,9 +435,9 @@ module "azure_firewall" {
 }
 
 
-# NB - I deployed this code with the hope that I will make it better
-# If you become the custodian of this codebase, you need to enhance the code by using dynamic blocks for rules to
-# avoid repition of the code blocks
+####################################################################################
+#              IPGROUPS                                                            #
+####################################################################################
 
 
 # Resource Group Module is Used to Create Resource Groups
@@ -478,6 +482,9 @@ module "ip_groupC" {
   # }
 }
 
+####################################################################################
+#              AZURE FIREWALL RULES                                                #
+####################################################################################
 
 module "azure_firewall_rules" {
   source              = "./modules/azure-firewallrules"
@@ -556,6 +563,7 @@ module "azure_firewall_rules" {
       destination_fqdns = ["*.bing.com"]
     }
   ]
+
   application_protocols = [
     {
       type = "Http"
@@ -573,92 +581,99 @@ module "azure_firewall_rules" {
 
 }
 
-#########################################Begin Implementing Azure Bastion ####################################
 
-# publicip Module is used to create Public IP Address
-module "public_ip_04" {
-  source = "./modules/azure-publicip"
+####################################################################################
+#              BASTION                                                     #
+####################################################################################
 
-  # Used for Azure Bastion
-  public_ip_name      = "pip-bastion-01"
-  resource_group_name = module.connectivity-resourcegroup.rg_name
-  location            = module.connectivity-resourcegroup.rg_location
-  allocation_method   = "Static"
-  sku                 = "Standard"
+# # publicip Module is used to create Public IP Address
+# module "public_ip_04" {
+#   source = "./modules/azure-publicip"
 
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
+#   # Used for Azure Bastion
+#   public_ip_name      = "pip-bastion-01"
+#   resource_group_name = module.connectivity-resourcegroup.rg_name
+#   location            = module.connectivity-resourcegroup.rg_location
+#   allocation_method   = "Static"
+#   sku                 = "Standard"
 
-}
+#   # providers = {
+#   #   azurerm = azurerm.connectivity
+#   # }
+
+# }
 
 
-# bastion Module is used to create Bastion in Hub Virtual Network - To Console into Virtual Machines Securely
-module "vm-bastion" {
-  source = "./modules/azure-bastion"
+# # bastion Module is used to create Bastion in Hub Virtual Network - To Console into Virtual Machines Securely
+# module "vm-bastion" {
+#   source = "./modules/azure-bastion"
 
-  bastion_host_name   = "bas-connectivity-hub-01"
-  resource_group_name = module.connectivity-resourcegroup.rg_name
-  location            = module.connectivity-resourcegroup.rg_location
+#   bastion_host_name   = "bas-connectivity-hub-01"
+#   resource_group_name = module.connectivity-resourcegroup.rg_name
+#   location            = module.connectivity-resourcegroup.rg_location
 
-  ipconfig_name        = "configuration"
-  subnet_id            = module.hub-vnet.subnet_ids_hub[0]
-  public_ip_address_id = module.public_ip_04.public_ip_address_id
+#   ipconfig_name        = "configuration"
+#   subnet_id            = module.hub-vnet.subnet_ids_hub[0]
+#   public_ip_address_id = module.public_ip_04.public_ip_address_id
 
-  depends_on = [module.hub-vnet, module.azure_firewall]
+#   depends_on = [module.hub-vnet, module.azure_firewall]
 
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
+#   # providers = {
+#   #   azurerm = azurerm.connectivity
+#   # }
 
-}
+# }
 
-#########################################Begin Implementing Azure VPN Gateway####################################
+####################################################################################
+#              VPN GATEWAY                                                     #
+####################################################################################
 
-# publicip Module is used to create Public IP Address
-module "public_ip_01" {
-  source = "./modules/azure-publicip"
+# # publicip Module is used to create Public IP Address
+# module "public_ip_01" {
+#   source = "./modules/azure-publicip"
 
-  # Used for VPN Gateway 
-  public_ip_name      = "pip-vgw-02"
-  resource_group_name = module.connectivity-resourcegroup.rg_name
-  location            = module.connectivity-resourcegroup.rg_location
-  allocation_method   = "Static"
-  sku                 = "Standard"
+#   # Used for VPN Gateway 
+#   public_ip_name      = "pip-vgw-02"
+#   resource_group_name = module.connectivity-resourcegroup.rg_name
+#   location            = module.connectivity-resourcegroup.rg_location
+#   allocation_method   = "Static"
+#   sku                 = "Standard"
 
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
+#   # providers = {
+#   #   azurerm = azurerm.connectivity
+#   # }
+# }
 
-# vpn-gateway Module is used to create Express Route Gateway - So that it can connect to the express route Circuit
-module "vpn_gateway" {
-  source     = "./modules/azure-vpn-gateway"
-  depends_on = [module.hub-vnet, module.azure_firewall]
+# # vpn-gateway Module is used to create Express Route Gateway - So that it can connect to the express route Circuit
+# module "vpn_gateway" {
+#   source     = "./modules/azure-vpn-gateway"
+#   depends_on = [module.hub-vnet, module.azure_firewall]
 
-  vpn_gateway_name    = "vpn-connectivity-hub-01"
-  location            = module.connectivity-resourcegroup.rg_location
-  resource_group_name = module.connectivity-resourcegroup.rg_name
+#   vpn_gateway_name    = "vpn-connectivity-hub-01"
+#   location            = module.connectivity-resourcegroup.rg_location
+#   resource_group_name = module.connectivity-resourcegroup.rg_name
 
-  type     = "Vpn"
-  vpn_type = "RouteBased"
+#   type     = "Vpn"
+#   vpn_type = "RouteBased"
 
-  sku           = "VpnGw2"
-  active_active = false
-  enable_bgp    = false
+#   sku           = "VpnGw2"
+#   active_active = false
+#   enable_bgp    = false
 
-  ip_configuration              = "default"
-  private_ip_address_allocation = "Dynamic"
-  subnet_id                     = module.hub-vnet.subnet_ids_hub[1]
-  public_ip_address_id          = module.public_ip_01.public_ip_address_id
+#   ip_configuration              = "default"
+#   private_ip_address_allocation = "Dynamic"
+#   subnet_id                     = module.hub-vnet.subnet_ids_hub[1]
+#   public_ip_address_id          = module.public_ip_01.public_ip_address_id
 
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
+#   # providers = {
+#   #   azurerm = azurerm.connectivity
+#   # }
 
-} 
+# }
 
-#########################################Begin Implementing Private DNS Zone####################################
+####################################################################################
+#              Private DNS Zones                                                    #
+####################################################################################
 
 module "afritek-dnszone" {
   source              = "./modules/azure-dns-zone"
@@ -670,7 +685,9 @@ module "afritek-dnszone" {
 
 }
 
-#########################################Begin Implementing Private DNS Resolver####################################
+####################################################################################
+#              PRIVATE DNS RESOLVER                                                #
+####################################################################################
 
 
 # # Resource Group Module is Used to Create Resource Groups

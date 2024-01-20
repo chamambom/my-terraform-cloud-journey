@@ -17,3 +17,25 @@ resource "azurerm_ip_group" "tpk_ipgroups" {
 
 }
 
+
+# ipgroup = [
+#   { name = "NPS_Radius_Servers_1", resource_group_name = "werwerwrwrwerwrw", location = "australiaeast", cidrs = ["10.210.6.0/28"] },
+#   { name = "NPS_Radius_Servers_2", resource_group_name = "ddfgdgfdgfdgfdgd", location = "australiaeast", cidrs = ["10.210.6.0/28"] },
+# ]
+
+# variable "ipgroups" {
+#   type        = list(map(string))
+#   default     = []
+#   description = "List of objects that represent the configuration of each route."
+#   /*ROUTES = [{ name = "", address_prefix = "", next_hop_type = "", next_hop_in_ip_address = "" }]*/
+# }
+
+# dynamic "ipgroup" {
+#     for_each = var.ipgroups
+#     content {
+#       name                         = ipgroup.value.name
+#       location                     = ipgroup.value.address_prefix
+#       resource_group_name          = ipgroup.value.next_hop_type
+#       cidrs                        = ipgroup.value.next_hop_type
+#     }
+#   }

@@ -2,6 +2,7 @@
 module "resource_groups" {
   source   = "./modules/resource_groups"
   location = var.location
+  name     = "rg-test-name"
 }
 
 # # * * * * * * *  module virtual_networks is used for creating vnets in each Resource Group * * * * * * *
@@ -19,7 +20,8 @@ module "resource_groups" {
 module "rg-connectivity" {
   source   = "./modules/resource_groups"
   provider = azurerm.Aroturuki-Connectivity
-  name = "rg-connectivity-001"
+  name     = "rg-connectivity-001"
+  location = "australiaeast"
 }
 
 module "rg-management" {
@@ -27,8 +29,9 @@ module "rg-management" {
   # providers = {
   #   azurerm = azurerm.prod
   # }
-  provider = azurerm.Aroturuki-Management
-  name = "rg-management-001"
+  # provider = azurerm.Aroturuki-Management
+  name     = "rg-management-001"
+  location = "australiaeast"
 }
 
 # module "vneta-to-vnetb" {

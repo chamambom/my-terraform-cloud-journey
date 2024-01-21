@@ -1,7 +1,9 @@
 azure-tf-hub-and-spoke-features repo
 
-### This repo deploys the following resources using a hub & spoke architecture
+### I have created this repo to demonstrate how I have used terraform modules to deploy the following hub & spoke architecture resources.
 
+# Resource groups
+# Public IPs
 # hub vnet 
     Contains the Firewall, Bastion & Gateway Subnets
 # 2 spoke vnets
@@ -12,6 +14,6 @@ azure-tf-hub-and-spoke-features repo
 # VPN Gateway
 # Firewall Rules
 # IP Groups
-#
+# vnet peering - hub to spoke & vice versa
 
 

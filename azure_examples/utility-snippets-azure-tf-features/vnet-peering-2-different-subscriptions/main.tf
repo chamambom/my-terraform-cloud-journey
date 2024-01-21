@@ -1,5 +1,5 @@
 resource "azurerm_virtual_network_peering" "initiator_to_target" {
-  provider = azurerm.Aroturuki-Connectivity
+  provider = azurerm.Connectivity-Subscription
 
   name                         = var.peerings["source"]["name"]
   resource_group_name          = var.peerings["source"]["resource_group"]
@@ -10,7 +10,7 @@ resource "azurerm_virtual_network_peering" "initiator_to_target" {
 }
 
 resource "azurerm_virtual_network_peering" "target_to_initiator" {
-  provider = azurerm.Aroturuki-Management
+  provider = azurerm.Management-Subscription
 
   name                         = var.peerings["target"]["name"]
   resource_group_name          = var.peerings["target"]["resource_group"]

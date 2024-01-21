@@ -449,34 +449,25 @@ module "ipgroups-resourcegroup" {
 
 }
 
-module "ip_groupA" {
+
+
+module "ip_groups" {
   source = "./modules/azure-ipgroups"
 
-  ip_group_name       = "NPS_Radius_Servers"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.210.6.0/28"]
-
-}
-
-
-module "ip_groupB" {
-  source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "AOVPN_Internal_Subnet"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.210.4.0/27"]
-
-}
-
-module "ip_groupC" {
-  source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "AD_Servers"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.210.6.0/28"]
+  ipgroups = {
+    NPS_Radius_Servers_IP_Group = {
+      name                = "NPS_Radius_Servers"
+      location            = "australiaeast"
+      cidrs               = ["10.210.6.0/28"]
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+    },
+    AD_Servers_IP_Group = {
+      name                = "AD_Servers"
+      location            = "australiaeast"
+      cidrs               = ["10.210.6.0/28"]
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+    }
+  }
 
   # providers = {
   #   azurerm = azurerm.connectivity
@@ -503,8 +494,8 @@ module "azure_firewall_rules" {
   network_rules_01 = [
     {
       name                  = "Blocked_rule_1"
-      source_ip_groups      = [module.ip_groupA.ip_group_id_out]
-      destination_ip_groups = [module.ip_groupB.ip_group_id_out]
+      source_ip_groups      = [module.ip_groups.ip_group_1_id_out]
+      destination_ip_groups = [module.ip_groups.ip_group_1_id_out]
       destination_ports     = [11]
       protocols             = ["TCP"]
     },
@@ -517,33 +508,33 @@ module "azure_firewall_rules" {
   network_rules_02 = [
     {
       name                  = "NPS_Radius_Servers_Outbound"
-      source_ip_groups      = [module.ip_groupA.ip_group_id_out]
-      destination_ip_groups = [module.ip_groupB.ip_group_id_out]
+      source_ip_groups      = [module.ip_groups.ip_group_2_id_out]
+      destination_ip_groups = [module.ip_groups.ip_group_2_id_out]
       destination_ports     = [1812, 1813, 1645, 1646]
       protocols             = ["UDP", "ICMP"]
     },
-    {
-      name                  = "NPS_Radius_Servers_Inbound"
-      source_ip_groups      = [module.ip_groupB.ip_group_id_out]
-      destination_ip_groups = [module.ip_groupA.ip_group_id_out]
-      destination_ports     = [1812, 1813, 1645, 1646]
-      protocols             = ["UDP", "ICMP"]
-    },
-    {
-      name                  = "AD_Servers_Inbound"
-      source_ip_groups      = [module.ip_groupB.ip_group_id_out]
-      destination_ip_groups = [module.ip_groupC.ip_group_id_out]
-      destination_ports     = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88]
-      protocols             = ["UDP", "TCP", "ICMP"]
-    },
+    # {
+    #   name                  = "NPS_Radius_Servers_Inbound"
+    #   source_ip_groups      = [module.ip_groups.ip_group_id_out]
+    #   destination_ip_groups = [module.ip_groups.ip_group_id_out]
+    #   destination_ports     = [1812, 1813, 1645, 1646]
+    #   protocols             = ["UDP", "ICMP"]
+    # },
+    # {
+    #   name                  = "AD_Servers_Inbound"
+    #   source_ip_groups      = [module.ip_groups.ip_group_id_out]
+    #   destination_ip_groups = [module.ip_groups.ip_group_id_out]
+    #   destination_ports     = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88]
+    #   protocols             = ["UDP", "TCP", "ICMP"]
+    # },
 
-    {
-      name                  = "AD_Servers_Outbound"
-      source_ip_groups      = [module.ip_groupC.ip_group_id_out]
-      destination_ip_groups = [module.ip_groupB.ip_group_id_out]
-      destination_ports     = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88]
-      protocols             = ["UDP", "TCP", "ICMP"]
-    },
+    # {
+    #   name                  = "AD_Servers_Outbound"
+    #   source_ip_groups      = [module.ip_groups.ip_group_id_out]
+    #   destination_ip_groups = [module.ip_groups.ip_group_id_out]
+    #   destination_ports     = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88]
+    #   protocols             = ["UDP", "TCP", "ICMP"]
+    # },
 
   ]
 

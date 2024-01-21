@@ -9,14 +9,25 @@
 # }
 
 
+
 resource "azurerm_ip_group" "tpk_ipgroups" {
-  name                = var.ip_group_name
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  cidrs               = var.cidr_blocks
+  for_each = var.ipgroups
+
+  name                = each.value.name
+  location            = each.value.location
+  resource_group_name = each.value.resource_group_name
+  cidrs               = each.value.cidrs
 
 }
 
+
+# resource "azurerm_ip_group" "tpk_ipgroups" {
+#   name                = var.ip_group_name
+#   location            = var.location
+#   resource_group_name = var.resource_group_name
+#   cidrs               = var.cidr_blocks
+
+# }
 
 # ipgroup = [
 #   { name = "NPS_Radius_Servers_1", resource_group_name = "werwerwrwrwerwrw", location = "australiaeast", cidrs = ["10.210.6.0/28"] },

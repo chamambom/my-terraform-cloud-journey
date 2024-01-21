@@ -18,8 +18,8 @@ module "resource_groups" {
 
 
 module "rg-connectivity" {
-  source   = "./modules/resource_groups"
-  provider = azurerm.Aroturuki-Connectivity
+  source = "./modules/resource_groups"
+  # provider = azurerm.Aroturuki-Connectivity
   name     = "rg-connectivity-001"
   location = "australiaeast"
 }

@@ -64,3 +64,35 @@ resource "azurerm_private_dns_resolver_dns_forwarding_ruleset" "forwarding_rules
   location                                   = var.location
   private_dns_resolver_outbound_endpoint_ids = [each.value.outbound_endpoint_id]
 }
+
+###########################################################
+# Testing rule creation within the rule set created above #
+###########################################################
+
+resource "azurerm_private_dns_resolver_forwarding_rule" "corp_mycompany_com" {
+  name                      = "corp.mycompany.com" # Can only contain letters, numbers, underscores, and/or dashes, and should start with a letter.
+  dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.forwarding_ruleset.dns_outbound_endpoints.outbound.dns_forwarding_rulesets.outbound-default-ruleset.ruleset_id
+  domain_name               = "corp.mycompany.com." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
+  enabled                   = true
+  target_dns_servers {
+    ip_address = "10.0.0.3"
+    port       = 53
+  }
+  target_dns_servers {
+    ip_address = "10.0.0.4"
+    port       = 53
+  }
+
+}
+
+##################################################################################
+# Testing: Adding Inbound Endpoint private ip as Custom DNS Server Configuration #
+##################################################################################
+
+# resource "azurerm_virtual_network" "vnet_custom_dns" {
+#   name                = "vnet-custom-dns-server"
+#   location            = azurerm_resource_group.dns_resolver.location
+#   resource_group_name = azurerm_resource_group.dns_resolver.name
+#   address_space       = ["10.0.0.0/16"]
+#   dns_servers         = [module.dns-private-resolver.dns_resolver.dns_inbound_endpoints.inbound.inbound_endpoint_private_ip_address]
+# }

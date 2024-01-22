@@ -390,26 +390,30 @@ module "spoke1-to-hub" {
   # }
 
 }
+##########################################################################################################
+# Public IP Module to create Public IPs for the Hubvnet Services Such as Gateway, Bastion, VPN Gateway
 
-####################################################################################
-#              AZURE FIREWALL                                                     #
-####################################################################################
+#Question - What If you want to create Public IPs in other Subscriptions and Resource Groups, thats when 
+#You can duplicate this module.
+##########################################################################################################
 
-# publicip Module is used to create Public IP Address
-module "public_ip_03" {
-  source = "./modules/azure-publicip"
-
-  # Used for Azure Firewall
-  public_ip_name      = "pip-azure-firewall-01"
-  resource_group_name = module.connectivity-resourcegroup.rg_name
-  location            = module.connectivity-resourcegroup.rg_location
+module "connectivity-public-ips" {
+  source              = "./modules/azure-publicip"
   allocation_method   = "Static"
+  public_ip_name      = ["bastion", "gateway", "firewall"]
   sku                 = "Standard"
+  location            = module.connectivity-resourcegroup.rg_location
+  resource_group_name = module.connectivity-resourcegroup.rg_name
 
   # providers = {
   #   azurerm = azurerm.connectivity
   # }
 }
+
+
+####################################################################################
+#              AZURE FIREWALL                                                     #
+####################################################################################
 
 # azurefirewall Module is used to create Azure Firewall 
 # Firewall Policy
@@ -428,7 +432,7 @@ module "azure_firewall" {
 
   ipconfig_name        = "configuration"
   subnet_id            = module.hub-vnet.subnet_ids_hub[2]
-  public_ip_address_id = module.public_ip_03.public_ip_address_id
+  public_ip_address_id = module.connectivity-public-ips.firewall_public_ip_id
 
   azure_firewall_policy_name = "afwpolicy-afritek-ae-001"
 
@@ -578,23 +582,6 @@ module "azure_firewall_rules" {
 #              BASTION                                                     #
 ####################################################################################
 
-# # publicip Module is used to create Public IP Address
-# module "public_ip_04" {
-#   source = "./modules/azure-publicip"
-
-#   # Used for Azure Bastion
-#   public_ip_name      = "pip-bastion-01"
-#   resource_group_name = module.connectivity-resourcegroup.rg_name
-#   location            = module.connectivity-resourcegroup.rg_location
-#   allocation_method   = "Static"
-#   sku                 = "Standard"
-
-#   # providers = {
-#   #   azurerm = azurerm.connectivity
-#   # }
-
-# }
-
 
 # # bastion Module is used to create Bastion in Hub Virtual Network - To Console into Virtual Machines Securely
 # module "vm-bastion" {
@@ -606,7 +593,7 @@ module "azure_firewall_rules" {
 
 #   ipconfig_name        = "configuration"
 #   subnet_id            = module.hub-vnet.subnet_ids_hub[0]
-#   public_ip_address_id = module.public_ip_04.public_ip_address_id
+#   public_ip_address_id = module.connectivity-public-ips.bastion_public_ip_id
 
 #   depends_on = [module.hub-vnet, module.azure_firewall]
 
@@ -619,22 +606,6 @@ module "azure_firewall_rules" {
 ####################################################################################
 #              VPN GATEWAY                                                     #
 ####################################################################################
-
-# # publicip Module is used to create Public IP Address
-# module "public_ip_01" {
-#   source = "./modules/azure-publicip"
-
-#   # Used for VPN Gateway 
-#   public_ip_name      = "pip-vgw-02"
-#   resource_group_name = module.connectivity-resourcegroup.rg_name
-#   location            = module.connectivity-resourcegroup.rg_location
-#   allocation_method   = "Static"
-#   sku                 = "Standard"
-
-#   # providers = {
-#   #   azurerm = azurerm.connectivity
-#   # }
-# }
 
 # # vpn-gateway Module is used to create Express Route Gateway - So that it can connect to the express route Circuit
 # module "vpn_gateway" {
@@ -655,8 +626,7 @@ module "azure_firewall_rules" {
 #   ip_configuration              = "default"
 #   private_ip_address_allocation = "Dynamic"
 #   subnet_id                     = module.hub-vnet.subnet_ids_hub[1]
-#   public_ip_address_id          = module.public_ip_01.public_ip_address_id
-
+#   public_ip_address_id          = module.connectivity-public-ips.gateway_public_ip_id
 #   # providers = {
 #   #   azurerm = azurerm.connectivity
 #   # }
@@ -668,8 +638,9 @@ module "azure_firewall_rules" {
 ####################################################################################
 
 module "afritek-dnszone" {
-  source              = "./modules/azure-dns-zone"
-  resource_group_name = module.connectivity-resourcegroup.rg_name
+  source                = "./modules/azure-dns-zone"
+  resource_group_name   = module.connectivity-resourcegroup.rg_name
+  private_dns_zone_name = "afritek.co.nz"
 
   # providers = {
   #   azurerm = azurerm.connectivity

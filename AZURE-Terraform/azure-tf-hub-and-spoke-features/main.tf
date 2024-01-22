@@ -653,117 +653,138 @@ module "afritek-dnszone" {
 ####################################################################################
 
 
-# # Resource Group Module is Used to Create Resource Groups
-# module "private-resolver-resourcegroup" {
-#   source = "./modules/resourcegroups"
-#   # Resource Group Variables
-#   rg_name     = "rg-connectivity-adnspr-01"
-#   rg_location = "australiaeast"
+# Resource Group Module is Used to Create Resource Groups
+module "private-resolver-resourcegroup" {
+  source = "./modules/azure-resourcegroup"
+  # Resource Group Variables
+  rg_name     = "rg-connectivity-adnspr-01"
+  rg_location = "australiaeast"
+}
 
 
-# }
+module "spoke3-private-resolver-vnet" {
+  source = "./modules/azure-vnet-resources"
+
+  resource_group_name = module.private-resolver-resourcegroup.rg_name
+  vnetwork_name       = "vnet-adnspr-vnet-01"
+  location            = "australiaeast"
+  vnet_address_space  = ["10.250.0.0/24"]
+
+  # firewall_subnet_address_prefix = ["10.220.0.96/27"]
+  # gateway_subnet_address_prefix  = ["10.220.0.0/26"]
+  create_network_watcher = false
+
+  # Adding Standard DDoS Plan, and custom DNS servers (Optional)
+  create_ddos_plan = false
+
+  # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
+  # These are default subnets with required configuration, check README.md for more details
+  # NSG association to be added automatically for all subnets listed here.
+  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets.
+  # ex.: For 10.1.0.0/16 address space, usable address range start from 10.1.2.0/24 for all subnets.
+  # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
+  subnets = {
+    private-dns-inbound-subnet = {
+      subnet_name           = "snet-adnspr-inbound-01"
+      subnet_address_prefix = ["10.250.0.0/26"]
 
 
-# # vnet Module is used to create Virtual Networks and Subnets
-# module "dns-resolver-vnet" {
-#   source = "./modules/vnet"
+      delegation = {
+        name = "Microsoft.Network.dnsResolvers"
+        service_delegation = {
+          actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+          name    = "Microsoft.Network/dnsResolvers"
+        }
+      }
 
-#   virtual_network_name          = "vnet-adnspr-vnet-01"
-#   resource_group_name           = module.private-resolver-resourcegroup.rg_name
-#   location                      = module.private-resolver-resourcegroup.rg_location
-#   virtual_network_address_space = ["10.210.1.0/24"]
+      nsg_inbound_rules = [
+        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+        # To use defaults, use "" without adding any values.
+        # ["weballow", "100", "Inbound", "Allow", "Tcp", "80", "*", "0.0.0.0/0"],   
+      ]
 
-#   subnet_names = {}
+      nsg_outbound_rules = [
+        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+        # To use defaults, use "" without adding any values.
+        # ["ntp_out", "103", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
+      ]
+    }
 
-#   depends_on = [module.private-resolver-resourcegroup]
+    private-dns-outbound-subnet = {
+      subnet_name           = "snet-adnspr-outbound-01"
+      subnet_address_prefix = ["10.250.0.64/26"]
+      # service_endpoints     = ["Microsoft.Storage"]
 
-#   # providers = {
-#   #   azurerm = azurerm.connectivity
-#   # }
-# }
+      nsg_inbound_rules = [
+        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+        # To use defaults, use "" without adding any values.
+        # ["weballow", "200", "Inbound", "Allow", "Tcp", "80", "*", ""],
+      ]
 
+      nsg_outbound_rules = [
+        # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
+        # To use defaults, use "" without adding any values.
+      ]
+    }
 
-# # Creating Inbound Subnet, note there is only support for two inbound endpoints per DNS Resolver, and they cannot share the same subnet.
-# resource "azurerm_subnet" "inbound" {
-#   provider             = azurerm.connectivity
-#   name                 = "snet-adnspr-inbound-01"
-#   address_prefixes     = ["10.210.1.0/27"]
-#   resource_group_name  = module.private-resolver-resourcegroup.rg_name
-#   virtual_network_name = module.dns-resolver-vnet.vnet_name
+  }
 
-#   delegation {
-#     name = "Microsoft.Network.dnsResolvers"
-#     service_delegation {
-#       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-#       name    = "Microsoft.Network/dnsResolvers"
-#     }
-#   }
-
-# }
-
-# # Creating Outbound Subnet, note there is only support for two outbound endpoints per DNS Resolver, and they cannot share the same subnet.
-# resource "azurerm_subnet" "outbound" {
-#   provider             = azurerm.connectivity
-#   name                 = "snet-adnspr-outbound-01"
-#   address_prefixes     = ["10.210.1.32/27"]
-#   resource_group_name  = module.private-resolver-resourcegroup.rg_name
-#   virtual_network_name = module.dns-resolver-vnet.vnet_name
-
-#   delegation {
-#     name = "Microsoft.Network.dnsResolvers"
-#     service_delegation {
-#       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
-#       name    = "Microsoft.Network/dnsResolvers"
-#     }
-#   }
+  # Adding TAG's to your Azure resources (Required)
+  tags = {
+    ProjectName  = "demo-internal"
+    Env          = "dev"
+    Owner        = "user@example.com"
+    BusinessUnit = "CORP"
+    ServiceClass = "Gold"
+  }
+}
 
 
-# }
 
 
-# module "dns-private-resolver" {
-#   source              = "./modules/azure-private-dns-resolver"
-#   resource_group_name = module.private-resolver-resourcegroup.rg_name
-#   location            = module.private-resolver-resourcegroup.rg_location
-#   dns_resolver_name   = "dnspr-connectivity-adnspr-01"
-#   virtual_network_id  = module.dns-resolver-vnet.vnet_id
+module "dns-private-resolver" {
+  source              = "./modules/azure-private-dns-resolver"
+  resource_group_name = module.private-resolver-resourcegroup.rg_name
+  location            = module.private-resolver-resourcegroup.rg_location
+  dns_resolver_name   = "dnspr-connectivity-adnspr-01"
+  virtual_network_id  = module.spoke3-private-resolver-vnet.virtual_network_id
 
-#   dns_resolver_inbound_endpoints = [
-#     # There is currently only support for two Inbound endpoints per Private Resolver.
-#     {
-#       inbound_endpoint_name = "inbound"
-#       inbound_subnet_id     = azurerm_subnet.inbound.id
-#     }
-#   ]
+  dns_resolver_inbound_endpoints = [
+    # There is currently only support for two Inbound endpoints per Private Resolver.
+    {
+      inbound_endpoint_name = "inbound"
+      inbound_subnet_id     = module.spoke3-private-resolver-vnet.subnet_ids_spokes[0]
+    }
+  ]
 
-#   dns_resolver_outbound_endpoints = [
-#     # There is currently only support for two Outbound endpoints per Private Resolver.
-#     {
-#       outbound_endpoint_name = "outbound"
-#       outbound_subnet_id     = azurerm_subnet.outbound.id
-#       forwarding_rulesets = [
-#         # There is currently only support for two DNS forwarding rulesets per outbound endpoint.
-#         {
-#           forwarding_ruleset_name = "default-ruleset"
-#         }
-#       ]
-#     }
-#   ]
+  dns_resolver_outbound_endpoints = [
+    # There is currently only support for two Outbound endpoints per Private Resolver.
+    {
+      outbound_endpoint_name = "outbound"
+      outbound_subnet_id     = module.spoke3-private-resolver-vnet.subnet_ids_spokes[1]
+      forwarding_rulesets = [
+        # There is currently only support for two DNS forwarding rulesets per outbound endpoint.
+        {
+          forwarding_ruleset_name = "default-ruleset"
+        }
+      ]
+    }
+  ]
 
-# providers = {
-#   azurerm = azurerm.connectivity
-# }
-#}
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
 
 ###########################################################
 # Testing rule creation within the rule set created above #
 ###########################################################
 
 # resource "azurerm_private_dns_resolver_forwarding_rule" "tpk_nz" {
-#   provider                  = azurerm.connectivity
+#   # provider                  = azurerm.connectivity
 #   name                      = "dnsrs-shared-dns-aue-001" # Can only contain letters, numbers, underscores, and/or dashes, and should start with a letter.
 #   dns_forwarding_ruleset_id = module.dns-private-resolver.dns_resolver.dns_outbound_endpoints.outbound.dns_forwarding_rulesets.outbound-default-ruleset.ruleset_id
-#   domain_name               = "azure.tpk.co.nz." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
+#   domain_name               = "azure.afritek.co.nz." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
 #   enabled                   = true
 #   target_dns_servers {
 #     ip_address = "10.0.0.3"

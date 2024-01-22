@@ -1,12 +1,12 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source                = "hashicorp/azurerm"
-      version               = "~>3.0"
-      configuration_aliases = [azurerm]
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     azurerm = {
+#       source                = "hashicorp/azurerm"
+#       version               = "~>3.0"
+#       configuration_aliases = [azurerm]
+#     }
+#   }
+# }
 
 # Defining Local resources to be able to itegrate through multiple inbound and outbound endpoints, as well as multiple outbound forwarding rule sets.
 locals {

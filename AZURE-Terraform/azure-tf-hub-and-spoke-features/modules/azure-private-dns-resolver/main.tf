@@ -73,9 +73,8 @@ resource "azurerm_private_dns_resolver_forwarding_rule" "corp_mycompany_com" {
   name = "corp" # Can only contain letters, numbers, underscores, and/or dashes, and should start with a letter.
   # dns_forwarding_ruleset_id = "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/dnsForwardingRulesets/default-ruleset"
   dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.forwarding_ruleset["outbound-default-ruleset"].id
-  domain_name               = "corp.mycompany.com." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
+  domain_name               = "afritek.co.nz." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
   enabled                   = true
-
 
   target_dns_servers {
     ip_address = "10.0.0.3"
@@ -87,6 +86,13 @@ resource "azurerm_private_dns_resolver_forwarding_rule" "corp_mycompany_com" {
   }
 
 }
+
+# resource "azurerm_private_dns_resolver_virtual_network_link" "default" {
+#   for_each                  = { for key, value in local.network_links : value.name => value }
+#   name                      = "${each.key}-dnsfwrsvnetl"
+#   dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.forwarding_ruleset["outbound-default-ruleset"].id
+#   virtual_network_id        = each.value.vnet_id
+# }
 
 ##################################################################################
 # Testing: Adding Inbound Endpoint private ip as Custom DNS Server Configuration #

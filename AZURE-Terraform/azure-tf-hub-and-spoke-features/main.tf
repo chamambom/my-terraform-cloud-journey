@@ -776,41 +776,6 @@ module "dns-private-resolver" {
   # }
 }
 
-###########################################################
-# Testing rule creation within the rule set created above #
-###########################################################
-
-# resource "azurerm_private_dns_resolver_forwarding_rule" "tpk_nz" {
-#   # provider                  = azurerm.connectivity
-#   name                      = "dnsrs-shared-dns-aue-001" # Can only contain letters, numbers, underscores, and/or dashes, and should start with a letter.
-#   dns_forwarding_ruleset_id = module.dns-private-resolver.dns_resolver.dns_outbound_endpoints.outbound.dns_forwarding_rulesets.outbound-default-ruleset.ruleset_id
-#   domain_name               = "azure.afritek.co.nz." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
-#   enabled                   = true
-#   target_dns_servers {
-#     ip_address = "10.0.0.3"
-#     port       = 53
-#   }
-#   target_dns_servers {
-#     ip_address = "10.0.0.4"
-#     port       = 53
-#   }
-
-#   depends_on = [
-#     module.dns-private-resolver
-#   ]
-# }
-
-##################################################################################
-# Testing: Adding Inbound Endpoint private ip as Custom DNS Server Configuration #
-##################################################################################
-
-# resource "azurerm_virtual_network" "vnet_custom_dns" {
-#   name                = "vnet-custom-dns-server"
-#   location            = azurerm_resource_group.dns_resolver.location
-#   resource_group_name = azurerm_resource_group.dns_resolver.name
-#   address_space       = ["10.0.0.0/16"]
-#   dns_servers         = [module.dns-private-resolver.dns_resolver.dns_inbound_endpoints.inbound.inbound_endpoint_private_ip_address]
-# }
 
 #########################################Begin Implementing Private DNS Resolver####################################
 

@@ -70,10 +70,13 @@ resource "azurerm_private_dns_resolver_dns_forwarding_ruleset" "forwarding_rules
 ###########################################################
 
 resource "azurerm_private_dns_resolver_forwarding_rule" "corp_mycompany_com" {
-  name                      = "corp.mycompany.com" # Can only contain letters, numbers, underscores, and/or dashes, and should start with a letter.
-  dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.forwarding_ruleset.dns_outbound_endpoints.outbound.dns_forwarding_rulesets.outbound-default-ruleset.ruleset_id
+  name = "corp" # Can only contain letters, numbers, underscores, and/or dashes, and should start with a letter.
+  # dns_forwarding_ruleset_id = "/subscriptions/12345678-1234-9876-4563-123456789012/resourceGroups/example-resource-group/providers/Microsoft.Network/dnsForwardingRulesets/default-ruleset"
+  dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.forwarding_ruleset["outbound-default-ruleset"].id
   domain_name               = "corp.mycompany.com." # Domain name supports 2-34 lables and must end with a dot (period) for example corp.mycompany.com. has three lables.
   enabled                   = true
+
+
   target_dns_servers {
     ip_address = "10.0.0.3"
     port       = 53

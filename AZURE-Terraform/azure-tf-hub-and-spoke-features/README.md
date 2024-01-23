@@ -7,15 +7,24 @@
 #### hub vnet 
     Contains the Firewall, Bastion & Gateway Subnets
 #### 2 spoke vnets
-    Containes example workload subnets
+    Contains example workload subnets
 #### spoke routes and vice versa
     route tables forcing all traffic to go through the firewall.
 #### Firewall
      Azure firewall.
+#### Azure private dns resolver
+     Enables hybrid DNS connectivity between an organisation with on-premises and azure resources.
+#### Azure private DNS
+     Enable resolution of Azure resources.
 #### Bastion host
+     To connect securely to Azure resources
 #### VPN Gateway
+     Securely connect to Azure resources from on-premises
 #### Firewall Rules
+     Configure network and application firewall rules using IP Groups
 #### IP Groups
+     Group together IPs to make it easier to apply firewall rules.
 #### vnet peering - hub to spoke & vice versa
+    All spokes have to communicate through the hub.
 
 

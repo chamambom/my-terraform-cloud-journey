@@ -8,10 +8,10 @@ terraform {
       source  = "hashicorp/random"
       version = "3.1.0"
     }
-     azuread = {
-      source  = "hashicorp/azuread"
+    azuread = {
+      source = "hashicorp/azuread"
       # version = "2.24.0"
-       version = "~> 2.29.0"  
+      version = "~> 2.29.0"
     }
   }
 }
@@ -24,12 +24,12 @@ provider "random" {
 
 provider "azuread" {
   # Configuration options 
-  
+
 }
 
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-  
+
   skip_provider_registration = true #
   features {}
 }

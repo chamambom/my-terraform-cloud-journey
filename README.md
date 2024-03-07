@@ -15,9 +15,11 @@ This repository was initiated in 2021 during my tenure (2015-2022) at a Cloud Se
 
 Managed cloud customers - customers who would allow the CSP to deploy Platform & Application landing zones for a customer then handover an already secure governed cloud for them to deploy their workloads on. 
 
-Unmanaged cloud customers - these are customers that 
+Unmanaged cloud customers - customers that prefer managing their own AWS/Azure environments. All they needed was Tenant or Subscription provisioning.
 
-and manage depending on the scale of resources they intended to deploy, we utilized Terraform, Azure Repos, or GitHub to manage resources effectively.
+Tools used in the Continous Intergration/Deployment/Delivery (CI/CD):
+- Terraform & Azure Repos for Azure deployments and 
+- Terraform & GitHub actions for AWS environments.
 
 > Terraform enables you to safely and predictably create, change, and improve infrastructure.
 

@@ -13,9 +13,9 @@ Background:
 
 This repository was initiated in 2021 during my tenure (2015-2022) at a Cloud Service Provider (CSP), where I led a team of Cloud Delivery engineers operating remotely across Southern Africa markets - SouthAfrica, DRC, Zimbabwe, Zambia, and Botswana. Our clientele comprised both "managed cloud customers" and "unmanaged cloud customers." 
 
-Managed cloud customers - customers who would allow the CSP to deploy Platform & Application landing zones for a customer then handover an already secure governed cloud for them to deploy their workloads on. 
+> Managed cloud customers - customers who would allow the CSP to deploy Platform & Application landing zones for a customer then handover an already secure governed cloud for them to deploy their workloads on. 
 
-Unmanaged cloud customers - customers that prefer managing their own AWS/Azure environments. All they needed was Tenant or Subscription provisioning.
+> Unmanaged cloud customers - customers that prefer managing their own AWS/Azure environments. All they needed was Tenant or Subscription provisioning.
 
 Tools used in the Continous Intergration/Deployment/Delivery (CI/CD):
 - Terraform & Azure Repos for Azure deployments. 

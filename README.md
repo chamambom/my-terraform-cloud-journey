@@ -1,15 +1,23 @@
 # My Terraform (AWS/Azure) best practices
 
-#### This repository draws inspiration from Adam Rush's repository (details provided below). I've customized the code for my own use, refactored certain sections, incorporated Azure & AWS code snippets to use as reference for new projects, and eliminated deprecated code to align with the latest Terraform updates.
+#### This repository draws inspiration from Adam Rush's repository (details provided below). I've customized the code for my own use, refactored certain sections, incorporated Azure & AWS code snippets to reference, and eliminated deprecated code to align with the latest Terraform updates.
 
     Author:  Adam Rush
     Blog:    https://adamrushuk.github.io
     GitHub:  https://github.com/adamrushuk
     Twitter: @adamrushuk
 
-This repository contains terraform code snippets and best practices notes that i reuse from time to time when managing multi cloud environments (AWS/Azure). 
+This repository hosts Terraform code snippets and notes on best practices that I frequently utilize when working with AWS or Azure.
 
-Some background - I started this repo back in 2021 when I was still working for a CSP - Cloud Service Provider, leading a team of cloud delivery engineers operating remotely across Southern Africa (DRC , Zimbabwe ,Zambia and Botswana) markets. Our customers were segmented into "managed cloud customers" and "unmanaged cloud customers". Depending on the scale of resources that the "managed cloud customer" wanted to deploy - we used terraform, Azure repos or Github to manage resources. 
+Background:
+
+This repository was initiated in 2021 during my tenure (2015-2022) at a Cloud Service Provider (CSP), where I led a team of Cloud Delivery engineers operating remotely across Southern Africa markets - SouthAfrica, DRC, Zimbabwe, Zambia, and Botswana. Our clientele comprised both "managed cloud customers" and "unmanaged cloud customers." 
+
+Managed cloud customers - customers who would allow the CSP to deploy Platform & Application landing zones for a customer then handover an already secure governed cloud for them to deploy their workloads on. 
+
+Unmanaged cloud customers - these are customers that 
+
+and manage depending on the scale of resources they intended to deploy, we utilized Terraform, Azure Repos, or GitHub to manage resources effectively.
 
 > Terraform enables you to safely and predictably create, change, and improve infrastructure.
 

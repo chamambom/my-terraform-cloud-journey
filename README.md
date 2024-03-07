@@ -18,7 +18,7 @@ Managed cloud customers - customers who would allow the CSP to deploy Platform &
 Unmanaged cloud customers - customers that prefer managing their own AWS/Azure environments. All they needed was Tenant or Subscription provisioning.
 
 Tools used in the Continous Intergration/Deployment/Delivery (CI/CD):
-- Terraform & Azure Repos for Azure deployments and 
+- Terraform & Azure Repos for Azure deployments. 
 - Terraform & GitHub actions for AWS environments.
 
 > Terraform enables you to safely and predictably create, change, and improve infrastructure.

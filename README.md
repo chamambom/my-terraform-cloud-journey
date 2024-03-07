@@ -1,6 +1,6 @@
 # My Terraform (AWS/Azure) best practices
 
-#### This repo was inspired by Adam Rush's repo "details below". I have adapted the code for myself and my team, refactored some parts, added some code snipets for AWS and removed deprecated code to accomodate terraform changes. 
+#### This repository draws inspiration from Adam Rush's repository (details provided below). I've customized the code for my own use, refactored certain sections, incorporated Azure & AWS code snippets to use as reference for new projects, and eliminated deprecated code to align with the latest Terraform updates.
 
     Author:  Adam Rush
     Blog:    https://adamrushuk.github.io

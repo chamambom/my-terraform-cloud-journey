@@ -27,32 +27,32 @@ variable "virtual-wan-region2-hub1-prefix1" {
 variable "region1-vnet1-address-space" {
   type        = string
   description = "VNET address space for region 1 vnet"
-  default     = "10.10.10.0/24"
+  default     = "10.10.11.0/24"
 }
 variable "region1-vnet1-snet1-range" {
   type        = string
   description = "Subnet address space for region 1 subnet"
-  default     = "10.10.10.0/26"
+  default     = "10.10.11.0/26"
 }
 variable "region1-vnet1-bastion-snet-range" {
   type        = string
   description = "Subnet address space for region 1 Bastion subnet"
-  default     = "10.10.10.64/26"
+  default     = "10.10.11.64/26"
 }
 variable "region2-vnet1-address-space" {
   type        = string
   description = "VNET address space for region 2 vnet"
-  default     = "10.10.12.0/24"
+  default     = "10.10.13.0/24"
 }
 variable "region2-vnet1-snet1-range" {
   type        = string
   description = "Subnet address space for region 2 subnet"
-  default     = "10.10.12.0/26"
+  default     = "10.10.13.0/26"
 }
 variable "region2-vnet1-bastion-snet-range" {
   type        = string
   description = "Subnet address space for region 2 Bastion subnet"
-  default     = "10.10.12.64/26"
+  default     = "10.10.13.64/26"
 }
 variable "vmsize" {
   type        = string

@@ -57,7 +57,7 @@ variable "region2-vnet1-bastion-snet-range" {
 variable "vmsize" {
   type        = string
   description = "vm size"
-  default     = "Standard_B2als_v2"
+  default     = "Standard_B2s"
 }
 variable "adminusername" {
   type        = string

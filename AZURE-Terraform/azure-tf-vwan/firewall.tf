@@ -1,7 +1,7 @@
 # Azure Firewall
 resource "azurerm_firewall" "region1-azfw" {
   count               = var.azfw ? 1 : 0
-  name                = "${var.region1}-fw01"
+  name                = "AzureFirewall_nprod-vwan-01-ae-hub"
   location            = var.region1
   resource_group_name = azurerm_resource_group.region1-rg1.name
   sku_tier            = "Standard"
@@ -14,7 +14,7 @@ resource "azurerm_firewall" "region1-azfw" {
 }
 resource "azurerm_firewall" "region2-azfw" {
   count               = var.azfw ? 1 : 0
-  name                = "${var.region2}-fw01"
+  name                = "AzureFirewall_nprod-vwan-01-ase-hub"
   location            = var.region2
   resource_group_name = azurerm_resource_group.region2-rg1.name
   sku_tier            = "Standard"

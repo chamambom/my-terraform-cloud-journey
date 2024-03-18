@@ -1,7 +1,7 @@
 # virtual-wan Resources
 # virtual-wan
 resource "azurerm_virtual_wan" "virtual-wan1" {
-  name                = "virtual-wan-demo-01"
+  name                = "ent-vwan-01"
   resource_group_name = azurerm_resource_group.region1-rg1.name
   location            = var.region1
 
@@ -14,7 +14,7 @@ resource "azurerm_virtual_wan" "virtual-wan1" {
 }
 # virtual-wan Hub 1
 resource "azurerm_virtual_hub" "region1-vhub1" {
-  name                = "${var.region1}-virtual-wan-hub-01"
+  name                = "nprd-vwan-01-ae-hub"
   resource_group_name = azurerm_resource_group.region1-rg1.name
   location            = var.region1
   virtual_wan_id      = azurerm_virtual_wan.virtual-wan1.id
@@ -26,7 +26,7 @@ resource "azurerm_virtual_hub" "region1-vhub1" {
 }
 # virtual-wan Hub 2
 resource "azurerm_virtual_hub" "region2-vhub1" {
-  name                = "${var.region2}-virtual-wan-hub-02"
+  name                = "nprd-vwan-01-ase-hub"
   resource_group_name = azurerm_resource_group.region2-rg1.name
   location            = var.region2
   virtual_wan_id      = azurerm_virtual_wan.virtual-wan1.id

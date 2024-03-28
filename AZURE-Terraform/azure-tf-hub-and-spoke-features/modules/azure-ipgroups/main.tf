@@ -11,14 +11,23 @@
 
 
 resource "azurerm_ip_group" "tpk_ipgroups" {
-  for_each = var.ipgroups
-
-  name                = each.value.name
-  location            = each.value.location
-  resource_group_name = each.value.resource_group_name
-  cidrs               = each.value.cidrs
+  name                = var.ip_group_name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  cidrs               = var.cidr_blocks
 
 }
+
+
+# resource "azurerm_ip_group" "tpk_ipgroups" {
+#   for_each = var.ipgroups
+
+#   name                = each.value.name
+#   location            = each.value.location
+#   resource_group_name = each.value.resource_group_name
+#   cidrs               = each.value.cidrs
+
+# }
 
 
 # resource "azurerm_ip_group" "tpk_ipgroups" {

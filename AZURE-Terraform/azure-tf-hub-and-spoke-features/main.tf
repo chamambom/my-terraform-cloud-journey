@@ -486,16 +486,6 @@ module "ipgroups-resourcegroup" {
 # avoid repition of the code blocks
 
 
-# Resource Group Module is Used to Create Resource Groups
-module "ipgroups-resourcegroup" {
-  source = "./modules/resourcegroups"
-  # Resource Group Variables
-  az_rg_name     = "rg-ipgroups-001"
-  az_rg_location = "australiaeast"
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
 
 # When you get time, change the IP group data structure so that you can add the IP groups using this format below, instead of what we are currently using.
 
@@ -507,7 +497,7 @@ module "ipgroups-resourcegroup" {
 # ]
 
 module "ip_groupA" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
   ip_group_name       = "NPS_Radius_Servers"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
@@ -520,7 +510,7 @@ module "ip_groupA" {
 }
 
 module "ip_groupB" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
   ip_group_name       = "AOVPN_Internal_Subnet"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
@@ -533,7 +523,7 @@ module "ip_groupB" {
 }
 
 module "ip_groupC" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
   ip_group_name       = "AD_Servers"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
@@ -546,7 +536,7 @@ module "ip_groupC" {
 }
 
 module "ip_groupD" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
   ip_group_name       = "Workload_ase_Servers"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
@@ -559,7 +549,7 @@ module "ip_groupD" {
 }
 
 module "ip_groupE" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
   ip_group_name       = "Syslog_Servers"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
@@ -572,7 +562,7 @@ module "ip_groupE" {
 }
 
 module "ip_groupF" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
   ip_group_name       = "Test_Block_1"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
@@ -585,7 +575,7 @@ module "ip_groupF" {
 }
 
 module "ip_groupG" {
-  source = "./modules/ipgroups"
+  source = "./modules/azure-ipgroups"
 
   ip_group_name       = "Test_Block_2"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
@@ -603,9 +593,9 @@ module "ip_groupG" {
 
 
 module "firewall-policy-global-rules" {
-  source             = "./modules/firewallrules"
+  source             = "./modules/azure-firewallrules"
   name               = "global-rules"
-  firewall_policy_id = module.firewall-policy.policy_id
+  firewall_policy_id = module.azure_firewall.azure_firewall_policy_id_out
   priority           = 100
   network_rule_collections = { //To the TPK Operations Team, this is where you add all your NETWORK rules.
     tpk-net-global-main = {

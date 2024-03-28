@@ -455,128 +455,241 @@ module "ipgroups-resourcegroup" {
 
 
 
-module "ip_groups" {
-  source = "./modules/azure-ipgroups"
+# module "ip_groups" {
+#   source = "./modules/azure-ipgroups"
 
-  ipgroups = {
-    NPS_Radius_Servers_IP_Group = {
-      name                = "NPS_Radius_Servers"
-      location            = "australiaeast"
-      cidrs               = ["10.210.6.0/28"]
-      resource_group_name = module.ipgroups-resourcegroup.rg_name
-    },
-    AD_Servers_IP_Group = {
-      name                = "AD_Servers"
-      location            = "australiaeast"
-      cidrs               = ["10.210.6.0/28"]
-      resource_group_name = module.ipgroups-resourcegroup.rg_name
-    }
-  }
+#   ipgroups = {
+#     NPS_Radius_Servers_IP_Group = {
+#       name                = "NPS_Radius_Servers"
+#       location            = "australiaeast"
+#       cidrs               = ["10.210.6.0/28"]
+#       resource_group_name = module.ipgroups-resourcegroup.rg_name
+#     },
+#     AD_Servers_IP_Group = {
+#       name                = "AD_Servers"
+#       location            = "australiaeast"
+#       cidrs               = ["10.210.6.0/28"]
+#       resource_group_name = module.ipgroups-resourcegroup.rg_name
+#     }
+#   }
 
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
+#   # providers = {
+#   #   azurerm = azurerm.connectivity
+#   # }
+# }
 
 ####################################################################################
 #              AZURE FIREWALL RULES                                                #
 ####################################################################################
+# NB - I deployed this code with the hope that I will make it better
+# If you become the custodian of this codebase, you need to enhance the code by using dynamic blocks for rules to
+# avoid repition of the code blocks
 
-module "azure_firewall_rules" {
-  source              = "./modules/azure-firewallrules"
-  location            = "australiaeast"
+
+# Resource Group Module is Used to Create Resource Groups
+module "ipgroups-resourcegroup" {
+  source = "./modules/resourcegroups"
+  # Resource Group Variables
+  az_rg_name     = "rg-ipgroups-001"
+  az_rg_location = "australiaeast"
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
+
+# When you get time, change the IP group data structure so that you can add the IP groups using this format below, instead of what we are currently using.
+
+# Recommended format. 
+
+# ipgroup = [
+#    NPS_Radius_Servers_1 = {resource_group_name = "werwerwrwrwerwrw", location = "australiaeast", cidrs = ["10.210.6.0/28"] },
+#    NPS_Radius_Servers_2 = {resource_group_name = "ddfgdgfdgfdgfdgd", location = "australiaeast", cidrs = ["10.210.6.0/28"] },
+# ]
+
+module "ip_groupA" {
+  source = "./modules/ipgroups"
+
+  ip_group_name       = "NPS_Radius_Servers"
   resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location            = "australiaeast"
+  cidr_blocks         = ["10.210.6.0/28"]
 
-  azure_firewall_policy_coll_group_name = "afwpolicy-collection-group-tpk-ae-001"
-  azure_firewall_policy_name            = "afwpolicy-tpk-ae-001"
-  azure_firewall_policy_id              = module.azure_firewall.azure_firewall_policy_id_out
-  priority                              = 100
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
 
-  network_rule_coll_name_01     = "Blocked_Network_Rules"
-  network_rule_coll_priority_01 = "200"
-  network_rule_coll_action_01   = "Deny"
-  network_rules_01 = [
-    {
-      name                  = "Blocked_rule_1"
-      source_ip_groups      = [module.ip_groups.ip_group_1_id_out]
-      destination_ip_groups = [module.ip_groups.ip_group_1_id_out]
-      destination_ports     = [11]
-      protocols             = ["TCP"]
-    },
+module "ip_groupB" {
+  source = "./modules/ipgroups"
 
-  ]
+  ip_group_name       = "AOVPN_Internal_Subnet"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location            = "australiaeast"
+  cidr_blocks         = ["10.210.4.0/27"]
 
-  network_rule_coll_name_02     = "Allowed_Network_Rules"
-  network_rule_coll_priority_02 = "300"
-  network_rule_coll_action_02   = "Allow"
-  network_rules_02 = [
-    {
-      name                  = "NPS_Radius_Servers_Outbound"
-      source_ip_groups      = [module.ip_groups.ip_group_2_id_out]
-      destination_ip_groups = [module.ip_groups.ip_group_2_id_out]
-      destination_ports     = [1812, 1813, 1645, 1646]
-      protocols             = ["UDP", "ICMP"]
-    },
-    # {
-    #   name                  = "NPS_Radius_Servers_Inbound"
-    #   source_ip_groups      = [module.ip_groups.ip_group_id_out]
-    #   destination_ip_groups = [module.ip_groups.ip_group_id_out]
-    #   destination_ports     = [1812, 1813, 1645, 1646]
-    #   protocols             = ["UDP", "ICMP"]
-    # },
-    # {
-    #   name                  = "AD_Servers_Inbound"
-    #   source_ip_groups      = [module.ip_groups.ip_group_id_out]
-    #   destination_ip_groups = [module.ip_groups.ip_group_id_out]
-    #   destination_ports     = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88]
-    #   protocols             = ["UDP", "TCP", "ICMP"]
-    # },
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
 
-    # {
-    #   name                  = "AD_Servers_Outbound"
-    #   source_ip_groups      = [module.ip_groups.ip_group_id_out]
-    #   destination_ip_groups = [module.ip_groups.ip_group_id_out]
-    #   destination_ports     = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88]
-    #   protocols             = ["UDP", "TCP", "ICMP"]
-    # },
+module "ip_groupC" {
+  source = "./modules/ipgroups"
 
-  ]
+  ip_group_name       = "AD_Servers"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location            = "australiaeast"
+  cidr_blocks         = ["10.210.6.0/28"]
 
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
 
+module "ip_groupD" {
+  source = "./modules/ipgroups"
 
-  application_rule_coll_name     = "Allowed_Services"
-  application_rule_coll_priority = "500"
-  application_rule_coll_action   = "Allow"
-  application_rules = [
-    {
-      name              = "Allowed_website_01"
-      source_addresses  = ["*"]
-      destination_fqdns = ["bing.co.uk"]
-    },
-    {
-      name              = "Allowed_website_02"
-      source_addresses  = ["*"]
-      destination_fqdns = ["*.bing.com"]
-    }
-  ]
+  ip_group_name       = "Workload_ase_Servers"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location            = "australiaeast"
+  cidr_blocks         = ["10.210.2.0/24"]
 
-  application_protocols = [
-    {
-      type = "Http"
-      port = 80
-    },
-    {
-      type = "Https"
-      port = 443
-    }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
+
+module "ip_groupE" {
+  source = "./modules/ipgroups"
+
+  ip_group_name       = "Syslog_Servers"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location            = "australiaeast"
+  cidr_blocks         = ["10.200.48.31"]
+
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
+
+module "ip_groupF" {
+  source = "./modules/ipgroups"
+
+  ip_group_name       = "Test_Block_1"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location            = "australiaeast"
+  cidr_blocks         = ["10.210.0.0/16"]
+
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
+
+module "ip_groupG" {
+  source = "./modules/ipgroups"
+
+  ip_group_name       = "Test_Block_2"
+  resource_group_name = module.ipgroups-resourcegroup.rg_name
+  location            = "australiaeast"
+  cidr_blocks = [
+    "10.200.0.0/16",
+    "10.100.0.0/16"
   ]
 
   # providers = {
   #   azurerm = azurerm.connectivity
   # }
-
 }
 
+
+
+module "firewall-policy-global-rules" {
+  source             = "./modules/firewallrules"
+  name               = "global-rules"
+  firewall_policy_id = module.firewall-policy.policy_id
+  priority           = 100
+  network_rule_collections = { //To the TPK Operations Team, this is where you add all your NETWORK rules.
+    tpk-net-global-main = {
+      priority = 105
+      rules = {
+        NPS_Radius_Servers_Outbound = { source_ip_groups = [module.ip_groupA.ip_group_id_out], destination_ip_groups = [module.ip_groupB.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [1812, 1813, 1645, 1646] }
+        NPS_Radius_Servers_Inbound  = { source_ip_groups = [module.ip_groupB.ip_group_id_out], destination_ip_groups = [module.ip_groupA.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [1812, 1813, 1645, 1646] }
+        AD_Servers_Inbound          = { source_ip_groups = [module.ip_groupB.ip_group_id_out], destination_ip_groups = [module.ip_groupC.ip_group_id_out], protocols = ["UDP", "TCP", "ICMP"], destination_ports = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88] }
+        AD_Servers_Outbound         = { source_ip_groups = [module.ip_groupC.ip_group_id_out], destination_ip_groups = [module.ip_groupB.ip_group_id_out], protocols = ["UDP", "TCP", "ICMP"], destination_ports = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88] }
+        AD_Servers_Outbound_Syslog  = { source_ip_groups = [module.ip_groupC.ip_group_id_out], destination_ip_groups = [module.ip_groupE.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [514] }
+        Test29Jan                   = { source_ip_groups = [module.ip_groupG.ip_group_id_out], destination_ip_groups = [module.ip_groupF.ip_group_id_out], protocols = ["Any"], destination_ports = ["*"] }
+        Test2                       = { source_ip_groups = [module.ip_groupF.ip_group_id_out], destination_ip_groups = [module.ip_groupG.ip_group_id_out], protocols = ["Any"], destination_ports = ["*"] }
+        test_AD_to_AOVPN            = { source_addresses = ["10.210.6.0/24"], destination_addresses = ["10.210.20.0/22"], protocols = ["Any"], destination_ports = ["*"] }
+        Allow_AOVPN_to_DCs          = { source_addresses = ["10.210.20.0/22"], destination_addresses = ["10.210.6.4", "10.210.6.5", "10.200.48.104", "10.200.48.26"], protocols = ["TCP", "ICMP", "UDP"], destination_ports = [53, 445] }
+      }
+      tpk-net-global-blacklist = { //To the TPK Operations Team, this is where you add NETWORK rules in your blacklist - Any rules here are just placeholders, please change them accordingly.
+        action   = "Deny"
+        priority = 100
+        rules = {
+          NPS_Radius_Servers_Outbound = { source_ip_groups = [module.ip_groupA.ip_group_id_out], destination_ip_groups = [module.ip_groupB.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [500] }
+          NPS_Radius_Servers_Inbound  = { source_ip_groups = [module.ip_groupB.ip_group_id_out], destination_ip_groups = [module.ip_groupA.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [500] }
+        }
+      }
+    }
+  }
+
+  application_rule_collection = {
+    tpk-app-global-main = { //To the TPK Operations Team, this is where you add all your APPLICATION rules.
+      priority = 135
+      rules = {
+        Windows_Update            = { source_addresses = ["10.210.0.0/16"], destination_fqdn_tags = ["WindowsUpdate"], protocols = [{ type = "Http", port = "80" }, { type = "Https", port = "443" }] }
+        SCEPman                   = { source_addresses = ["*"], destination_fqdns = ["app-scepmantpk-001.azurewebsites.net"], protocols = [{ type = "Http", port = "80" }, { type = "Https", port = "443" }] }
+        Defender_Identity_Sensors = { source_addresses = ["10.210.6.4", "10.210.6.5"], destination_fqdns = ["*.atp.azure.com"], protocols = [{ type = "Http", port = "80" }, { type = "Https", port = "443" }] }
+      }
+    }
+    tpk-app-global-blacklist = { //To the TPK Operations Team, this is where you add all your APPLICATION rules you want to block.
+      action   = "Deny"
+      priority = 130
+      rules = {
+        webcategories = { source_ip_groups = [module.ip_groupB.ip_group_id_out], web_categories = ["CriminalActivity"], protocols = [{}, { type = "Http", port = "80" }] }
+      }
+    }
+  }
+  nat_rule_collection = { //To the TPK Operations Team, this is where you add all your APPLICATION rules - The rules are just place holders, change them accordingly.
+    tpk-nat-global-main = {
+      priority = 100
+      rules = {
+        smtp-prd = { source_addresses = ["*"], destination_address = "20.28.235.21", destination_port = 25, translated_address = "10.210.6.15", translated_port = 25 }
+      }
+    }
+  }
+
+
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
+}
+
+# Some Notes On how Azure Firewall Structures 
+
+# Rule collection groups can include rule collections of various types. Rule collection group priority affects the order in which rules are executed.
+
+
+# You can include the block of code below if you want to attach it to a different policy ID or a Rule collection group.
+
+# module "firewall-policy-messaging-rules" {
+#   source = "./modules/firewallrules"
+#   name   = "messaging-rules"
+#   # firewall_policy_id = module.firewall-policy.policy_id
+#   priority = 200
+#   nat_rule_collection = { //To the TPK Operations Team, this is where you add all your APPLICATION rules - The rules are just place holders, change them accordingly.
+#     nat-messaging = {
+#       priority = 100
+#       rules = {
+#         smtp-prd = { source_addresses = ["*"], destination_address = "20.28.235.21", destination_port = 25, translated_address = "10.210.6.15", translated_port = 25 }
+#       }
+#     }
+#   }
+
+#   providers = {
+#     azurerm = azurerm.connectivity
+#   }
+
+# }
 
 ####################################################################################
 #              BASTION                                                     #

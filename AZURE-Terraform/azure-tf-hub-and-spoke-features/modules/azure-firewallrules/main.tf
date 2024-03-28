@@ -1,75 +1,112 @@
-# terraform {
-#   required_providers {
-#     azurerm = {
-#       source                = "hashicorp/azurerm"
-#       version               = "~>3.0"
-#       configuration_aliases = [azurerm]
-#     }
-#   }
+terraform {
+  required_providers {
+    azurerm = {
+      source                = "hashicorp/azurerm"
+      version               = "~>3.0"
+      configuration_aliases = [azurerm]
+    }
+  }
+}
+
+
+
+
+# #Firewall Policy
+# data "azurerm_firewall_policy" "afritekfwpolicy" {
+#   name                = "afwpolicy-afritek-ae-001"
+#   resource_group_name = "rg-connectivity-hub-01"
 # }
 
 
 
 
-# Firewall Policy Rules
-resource "azurerm_firewall_policy_rule_collection_group" "az-collection-pol01" {
-  name = var.azure_firewall_policy_coll_group_name
+resource "azurerm_firewall_policy_rule_collection_group" "default" {
+  name               = "afwpolicy-collection-group-afritek-ae-001"
+  firewall_policy_id = var.firewall_policy_id
+  # firewall_policy_id = data.azurerm_firewall_policy.afritekfwpolicy.id
+  priority = var.priority
 
-  #Associating Azure Firewall with Firewall Manager Policy
-  firewall_policy_id = var.azure_firewall_policy_id
-  priority           = var.priority
+  dynamic "network_rule_collection" {
+    for_each = var.network_rule_collections != null ? { for key, value in var.network_rule_collections : key => value } : {}
 
-  network_rule_collection {
-    name     = var.network_rule_coll_name_01
-    priority = var.network_rule_coll_priority_01
-    action   = var.network_rule_coll_action_01
-    dynamic "rule" {
-      for_each = var.network_rules_01
-      content {
-        name = rule.value.name
-        # source_addresses      = rule.value.source_addresses
-        # destination_addresses = rule.value.destination_addresses
-        source_ip_groups      = rule.value.source_ip_groups
-        destination_ip_groups = rule.value.destination_ip_groups
-        destination_ports     = rule.value.destination_ports
-        protocols             = rule.value.protocols
+    content {
+      name     = network_rule_collection.key
+      action   = network_rule_collection.value.action
+      priority = network_rule_collection.value.priority
+
+      dynamic "rule" {
+        for_each = network_rule_collection.value.rules != null ? { for key, value in network_rule_collection.value.rules : key => value } : {}
+
+        content {
+          name                  = rule.key
+          protocols             = rule.value.protocols
+          source_addresses      = rule.value.source_addresses
+          source_ip_groups      = rule.value.source_ip_groups
+          destination_addresses = rule.value.destination_addresses
+          destination_ip_groups = rule.value.destination_ip_groups
+          destination_ports     = rule.value.destination_ports
+          destination_fqdns     = rule.value.destination_fqdns
+        }
       }
     }
   }
 
-  network_rule_collection {
-    name     = var.network_rule_coll_name_02
-    priority = var.network_rule_coll_priority_02
-    action   = var.network_rule_coll_action_02
-    dynamic "rule" {
-      for_each = var.network_rules_02
-      content {
-        name = rule.value.name
-        # source_addresses      = rule.value.source_addresses
-        # destination_addresses = rule.value.destination_addresses
-        source_ip_groups      = rule.value.source_ip_groups
-        destination_ip_groups = rule.value.destination_ip_groups
-        destination_ports     = rule.value.destination_ports
-        protocols             = rule.value.protocols
+  dynamic "nat_rule_collection" {
+    for_each = var.nat_rule_collection != null ? { for key, value in var.nat_rule_collection : key => value } : {}
+
+    content {
+      name     = nat_rule_collection.key
+      action   = nat_rule_collection.value.action
+      priority = nat_rule_collection.value.priority
+
+      dynamic "rule" {
+        for_each = nat_rule_collection.value.rules != null ? { for key, value in nat_rule_collection.value.rules : key => value } : {}
+
+        content {
+          name                = rule.key
+          protocols           = rule.value.protocols
+          source_addresses    = rule.value.source_addresses
+          source_ip_groups    = rule.value.source_ip_groups
+          destination_address = rule.value.destination_address
+          destination_ports   = [rule.value.destination_port]
+          translated_address  = rule.value.translated_address
+          translated_fqdn     = rule.value.translated_fqdn
+          translated_port     = rule.value.translated_port
+        }
       }
     }
   }
 
-  application_rule_collection {
-    name     = var.application_rule_coll_name
-    priority = var.application_rule_coll_priority
-    action   = var.application_rule_coll_action
-    dynamic "rule" {
-      for_each = var.application_rules
-      content {
-        name              = rule.value.name
-        source_addresses  = rule.value.source_addresses
-        destination_fqdns = rule.value.destination_fqdns
-        dynamic "protocols" {
-          for_each = var.application_protocols
-          content {
-            type = protocols.value.type
-            port = protocols.value.port
+  dynamic "application_rule_collection" {
+    for_each = var.application_rule_collection != null ? { for key, value in var.application_rule_collection : key => value } : {}
+
+    content {
+      name     = application_rule_collection.key
+      action   = application_rule_collection.value.action
+      priority = application_rule_collection.value.priority
+
+      dynamic "rule" {
+        for_each = application_rule_collection.value.rules != null ? { for key, value in application_rule_collection.value.rules : key => value } : {}
+
+        content {
+          name                  = rule.key
+          description           = rule.value.description
+          source_addresses      = rule.value.source_addresses
+          source_ip_groups      = rule.value.source_ip_groups
+          destination_addresses = rule.value.destination_addresses
+          destination_urls      = rule.value.destination_urls
+          destination_fqdns     = rule.value.destination_fqdns
+          destination_fqdn_tags = rule.value.destination_fqdn_tags
+          terminate_tls         = rule.value.terminate_tls
+          web_categories        = rule.value.web_categories
+
+          dynamic "protocols" {
+            for_each = rule.value.protocols != null ? rule.value.protocols : []
+
+            content {
+              type = protocols.value.type
+              port = protocols.value.port
+            }
           }
         }
       }

@@ -643,7 +643,7 @@ module "firewall-policy-global-rules" {
     tpk-nat-global-main = {
       priority = 100
       rules = {
-        smtp-prd = { source_addresses = ["*"], destination_address = "20.28.235.21", destination_port = 25, translated_address = "10.210.6.15", translated_port = 25 }
+        smtp-prd = { source_addresses = ["*"], destination_address = "20.28.235.21", destination_port = 25, translated_address = "10.210.0.4", translated_port = 25 }
       }
     }
   }

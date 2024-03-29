@@ -479,13 +479,11 @@ module "ipgroups-resourcegroup" {
 # }
 
 ####################################################################################
-#              AZURE FIREWALL RULES                                                #
+#              AZURE IP GROUPS                                               #
 ####################################################################################
 # NB - I deployed this code with the hope that I will make it better
 # If you become the custodian of this codebase, you need to enhance the code by using dynamic blocks for rules to
 # avoid repition of the code blocks
-
-
 
 # When you get time, change the IP group data structure so that you can add the IP groups using this format below, instead of what we are currently using.
 
@@ -495,101 +493,63 @@ module "ipgroups-resourcegroup" {
 #    NPS_Radius_Servers_1 = {resource_group_name = "werwerwrwrwerwrw", location = "australiaeast", cidrs = ["10.210.6.0/28"] },
 #    NPS_Radius_Servers_2 = {resource_group_name = "ddfgdgfdgfdgfdgd", location = "australiaeast", cidrs = ["10.210.6.0/28"] },
 # ]
-
-module "ip_groupA" {
+module "ip_groups" {
   source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "NPS_Radius_Servers"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.210.6.0/28"]
-
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
-
-module "ip_groupB" {
-  source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "AOVPN_Internal_Subnet"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.210.4.0/27"]
-
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
-
-module "ip_groupC" {
-  source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "AD_Servers"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.210.6.0/28"]
-
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
-
-module "ip_groupD" {
-  source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "Workload_ase_Servers"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.210.2.0/24"]
-
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
-
-module "ip_groupE" {
-  source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "Syslog_Servers"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.200.48.31"]
-
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
-
-module "ip_groupF" {
-  source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "Test_Block_1"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks         = ["10.210.0.0/16"]
-
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
-}
-
-module "ip_groupG" {
-  source = "./modules/azure-ipgroups"
-
-  ip_group_name       = "Test_Block_2"
-  resource_group_name = module.ipgroups-resourcegroup.rg_name
-  location            = "australiaeast"
-  cidr_blocks = [
-    "10.200.0.0/16",
-    "10.100.0.0/16"
+  ip_groups = [
+    {
+      name                = "NPS_Radius_Servers"
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+      location            = "australiaeast"
+      cidrs               = ["10.210.6.0/28"]
+    },
+    {
+      name                = "NPS_Radius_Servers_2"
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+      location            = "australiaeast"
+      cidrs               = ["10.210.6.0/28"]
+    },
+    {
+      name                = "AOVPN_Internal_Subnet"
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+      location            = "australiaeast"
+      cidrs               = ["10.210.4.0/27"]
+    },
+    {
+      name                = "AD_Servers"
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+      location            = "australiaeast"
+      cidrs               = ["10.210.6.0/28"]
+    },
+    {
+      name                = "Workload_ase_Servers"
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+      location            = "australiaeast"
+      cidrs               = ["10.210.2.0/24"]
+    },
+    {
+      name                = "Syslog_Servers"
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+      location            = "australiaeast"
+      cidrs               = ["10.200.48.31"]
+    },
+    {
+      name                = "Test_Block_1"
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+      location            = "australiaeast"
+      cidrs               = ["10.210.0.0/16"]
+    },
+    {
+      name                = "Test_Block_2"
+      resource_group_name = module.ipgroups-resourcegroup.rg_name
+      location            = "australiaeast"
+      cidrs = [
+        "10.200.0.0/16",
+        "10.100.0.0/16"
+      ]
+    }
   ]
 
-  # providers = {
-  #   azurerm = azurerm.connectivity
-  # }
 }
-
 
 
 module "firewall-policy-global-rules" {
@@ -601,13 +561,13 @@ module "firewall-policy-global-rules" {
     tpk-net-global-main = {
       priority = 105
       rules = {
-        NPS_Radius_Servers_Outbound = { source_ip_groups = [module.ip_groupA.ip_group_id_out], destination_ip_groups = [module.ip_groupB.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [1812, 1813, 1645, 1646] }
-        NPS_Radius_Servers_Inbound  = { source_ip_groups = [module.ip_groupB.ip_group_id_out], destination_ip_groups = [module.ip_groupA.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [1812, 1813, 1645, 1646] }
-        AD_Servers_Inbound          = { source_ip_groups = [module.ip_groupB.ip_group_id_out], destination_ip_groups = [module.ip_groupC.ip_group_id_out], protocols = ["UDP", "TCP", "ICMP"], destination_ports = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88] }
-        AD_Servers_Outbound         = { source_ip_groups = [module.ip_groupC.ip_group_id_out], destination_ip_groups = [module.ip_groupB.ip_group_id_out], protocols = ["UDP", "TCP", "ICMP"], destination_ports = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88] }
-        AD_Servers_Outbound_Syslog  = { source_ip_groups = [module.ip_groupC.ip_group_id_out], destination_ip_groups = [module.ip_groupE.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [514] }
-        Test29Jan                   = { source_ip_groups = [module.ip_groupG.ip_group_id_out], destination_ip_groups = [module.ip_groupF.ip_group_id_out], protocols = ["Any"], destination_ports = ["*"] }
-        Test2                       = { source_ip_groups = [module.ip_groupF.ip_group_id_out], destination_ip_groups = [module.ip_groupG.ip_group_id_out], protocols = ["Any"], destination_ports = ["*"] }
+        NPS_Radius_Servers_Outbound = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["UDP", "ICMP"], destination_ports = [1812, 1813, 1645, 1646] }
+        NPS_Radius_Servers_Inbound  = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["UDP", "ICMP"], destination_ports = [1812, 1813, 1645, 1646] }
+        AD_Servers_Inbound          = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["UDP", "TCP", "ICMP"], destination_ports = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88] }
+        AD_Servers_Outbound         = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["UDP", "TCP", "ICMP"], destination_ports = [389, 636, 445, 53, 3268, 3269, 88, 135, 464, 139, "49152-65535", 88] }
+        AD_Servers_Outbound_Syslog  = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["UDP", "ICMP"], destination_ports = [514] }
+        Test29Jan                   = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["Any"], destination_ports = ["*"] }
+        Test2                       = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["Any"], destination_ports = ["*"] }
         test_AD_to_AOVPN            = { source_addresses = ["10.210.6.0/24"], destination_addresses = ["10.210.20.0/22"], protocols = ["Any"], destination_ports = ["*"] }
         Allow_AOVPN_to_DCs          = { source_addresses = ["10.210.20.0/22"], destination_addresses = ["10.210.6.4", "10.210.6.5", "10.200.48.104", "10.200.48.26"], protocols = ["TCP", "ICMP", "UDP"], destination_ports = [53, 445] }
       }
@@ -615,8 +575,8 @@ module "firewall-policy-global-rules" {
         action   = "Deny"
         priority = 100
         rules = {
-          NPS_Radius_Servers_Outbound = { source_ip_groups = [module.ip_groupA.ip_group_id_out], destination_ip_groups = [module.ip_groupB.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [500] }
-          NPS_Radius_Servers_Inbound  = { source_ip_groups = [module.ip_groupB.ip_group_id_out], destination_ip_groups = [module.ip_groupA.ip_group_id_out], protocols = ["UDP", "ICMP"], destination_ports = [500] }
+          NPS_Radius_Servers_Outbound = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["UDP", "ICMP"], destination_ports = [500] }
+          NPS_Radius_Servers_Inbound  = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], destination_ip_groups = [module.ip_groups.ip_group_id_out[0]], protocols = ["UDP", "ICMP"], destination_ports = [500] }
         }
       }
     }
@@ -635,7 +595,7 @@ module "firewall-policy-global-rules" {
       action   = "Deny"
       priority = 130
       rules = {
-        webcategories = { source_ip_groups = [module.ip_groupB.ip_group_id_out], web_categories = ["CriminalActivity"], protocols = [{}, { type = "Http", port = "80" }] }
+        webcategories = { source_ip_groups = [module.ip_groups.ip_group_id_out[0]], web_categories = ["CriminalActivity"], protocols = [{}, { type = "Http", port = "80" }] }
       }
     }
   }

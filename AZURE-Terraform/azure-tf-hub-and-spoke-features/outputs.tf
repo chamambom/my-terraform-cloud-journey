@@ -46,6 +46,12 @@ output "network_security_group_ids" {
   value       = module.hub-vnet.network_security_group_ids
 }
 
+
+output "firewall_public_ip" {
+  description = "firewall public Ip"
+  value       = module.connectivity-public-ips.firewall_public_ip.ip_address
+}
+
 # # DDoS Protection plan
 # output "ddos_protection_plan" {
 #   description = "Ddos protection plan details"

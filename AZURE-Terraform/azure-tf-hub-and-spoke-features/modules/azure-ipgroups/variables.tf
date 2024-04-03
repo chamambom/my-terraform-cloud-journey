@@ -7,9 +7,3 @@ variable "ip_groups" {
   }))
 }
 
-
-variable "include_module" {
-  description = "Whether to include the module or not"
-  type        = bool
-  default     = false
-}

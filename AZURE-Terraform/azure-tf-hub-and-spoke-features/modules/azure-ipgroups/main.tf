@@ -9,7 +9,6 @@
 # }
 
 resource "azurerm_ip_group" "tpk_ipgroups" {
-  count    = var.include_module ? 1 : 0
   for_each = { for idx, ip_group in var.ip_groups : idx => ip_group }
 
   name                = each.value.name

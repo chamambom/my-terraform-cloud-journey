@@ -6,3 +6,10 @@ variable "ip_groups" {
     cidrs               = list(string)
   }))
 }
+
+
+variable "include_module" {
+  description = "Whether to include the module or not"
+  type        = bool
+  default     = false
+}

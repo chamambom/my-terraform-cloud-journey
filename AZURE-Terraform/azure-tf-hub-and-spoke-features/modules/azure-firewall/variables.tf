@@ -11,7 +11,7 @@ variable "resource_group_name" {
 }
 
 variable "sku_name" {
- type = string
+  type = string
 }
 
 variable "sku_tier" {
@@ -35,6 +35,14 @@ variable "public_ip_address_id" {
 variable "azure_firewall_policy_name" {
   description = "The full Azure resource ID of the remote virtual network."
 }
+
+variable "include_module" {
+  description = "Whether to include the module or not"
+  type        = bool
+  default     = false
+}
+
+
 
 # variable "azure_firewall_policy_coll_group_name" {
 #   description = "The full Azure resource ID of the remote virtual network."

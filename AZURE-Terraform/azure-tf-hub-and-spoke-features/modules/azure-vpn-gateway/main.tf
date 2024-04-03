@@ -12,6 +12,7 @@
 
 # Azure Virtual Network Gateway
 resource "azurerm_virtual_network_gateway" "virtual_network_gateway" {
+  count               = var.include_module ? 1 : 0
   name                = var.vpn_gateway_name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -30,3 +31,5 @@ resource "azurerm_virtual_network_gateway" "virtual_network_gateway" {
     public_ip_address_id          = var.public_ip_address_id
   }
 }
+
+

@@ -10,6 +10,7 @@
 
 
 resource "azurerm_bastion_host" "bastion" {
+  count               = var.include_module ? 1 : 0
   name                = var.bastion_host_name
   location            = var.location
   resource_group_name = var.resource_group_name

@@ -647,54 +647,53 @@ module "firewall-policy-global-rules" {
 
 
 # # bastion Module is used to create Bastion in Hub Virtual Network - To Console into Virtual Machines Securely
-# module "vm-bastion" {
-#   source = "./modules/azure-bastion"
+module "vm-bastion" {
+  source = "./modules/azure-bastion"
 
-#   bastion_host_name   = "bas-connectivity-hub-01"
-#   resource_group_name = module.connectivity-resourcegroup.rg_name
-#   location            = module.connectivity-resourcegroup.rg_location
+  bastion_host_name   = "bas-connectivity-hub-01"
+  resource_group_name = module.connectivity-resourcegroup.rg_name
+  location            = module.connectivity-resourcegroup.rg_location
 
-#   ipconfig_name        = "configuration"
-#   subnet_id            = module.hub-vnet.subnet_ids_hub[0]
-#   public_ip_address_id = module.connectivity-public-ips.bastion_public_ip_id
+  ipconfig_name        = "configuration"
+  subnet_id            = module.hub-vnet.subnet_ids_hub[0]
+  public_ip_address_id = module.connectivity-public-ips.bastion_public_ip_id
 
-#   depends_on = [module.hub-vnet, module.azure_firewall]
+  depends_on = [module.hub-vnet, module.azure_firewall]
 
-#   # providers = {
-#   #   azurerm = azurerm.connectivity
-#   # }
+  # providers = {
+  #   azurerm = azurerm.connectivity
+  # }
 
-# }
+}
 
 ####################################################################################
 #              VPN GATEWAY                                                     #
 ####################################################################################
 
 # # vpn-gateway Module is used to create Express Route Gateway - So that it can connect to the express route Circuit
-# module "vpn_gateway" {
-#   source     = "./modules/azure-vpn-gateway"
-#   depends_on = [module.hub-vnet, module.azure_firewall]
+module "vpn_gateway" {
+  source     = "./modules/azure-vpn-gateway"
+  depends_on = [module.hub-vnet, module.azure_firewall]
 
-#   vpn_gateway_name    = "vpn-connectivity-hub-01"
-#   location            = module.connectivity-resourcegroup.rg_location
-#   resource_group_name = module.connectivity-resourcegroup.rg_name
+  vpn_gateway_name    = "vpn-connectivity-hub-01"
+  location            = module.connectivity-resourcegroup.rg_location
+  resource_group_name = module.connectivity-resourcegroup.rg_name
 
-#   type     = "Vpn"
-#   vpn_type = "RouteBased"
+  type     = "Vpn"
+  vpn_type = "RouteBased"
 
-#   sku           = "VpnGw2"
-#   active_active = false
-#   enable_bgp    = false
+  sku           = "VpnGw2"
+  active_active = false
+  enable_bgp    = false
 
-#   ip_configuration              = "default"
-#   private_ip_address_allocation = "Dynamic"
-#   subnet_id                     = module.hub-vnet.subnet_ids_hub[1]
-#   public_ip_address_id          = module.connectivity-public-ips.gateway_public_ip_id
-#   # providers = {
-#   #   azurerm = azurerm.connectivity
-#   # }
-
-# }
+  ip_configuration              = "default"
+  private_ip_address_allocation = "Dynamic"
+  subnet_id                     = module.hub-vnet.subnet_ids_hub[1]
+  public_ip_address_id          = module.connectivity-public-ips.gateway_public_ip_id
+  #   # providers = {
+  #   #   azurerm = azurerm.connectivity
+  #   # }
+}
 
 ####################################################################################
 #              Private DNS Zones                                                    #

@@ -36,11 +36,6 @@ variable "azure_firewall_policy_name" {
   description = "The full Azure resource ID of the remote virtual network."
 }
 
-variable "include_module" {
-  description = "Whether to include the module or not"
-  type        = bool
-  default     = false
-}
 
 
 

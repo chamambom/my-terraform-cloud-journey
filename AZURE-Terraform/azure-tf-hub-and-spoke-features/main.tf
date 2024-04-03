@@ -455,28 +455,6 @@ module "ipgroups-resourcegroup" {
 
 
 
-# module "ip_groups" {
-#   source = "./modules/azure-ipgroups"
-
-#   ipgroups = {
-#     NPS_Radius_Servers_IP_Group = {
-#       name                = "NPS_Radius_Servers"
-#       location            = "australiaeast"
-#       cidrs               = ["10.210.6.0/28"]
-#       resource_group_name = module.ipgroups-resourcegroup.rg_name
-#     },
-#     AD_Servers_IP_Group = {
-#       name                = "AD_Servers"
-#       location            = "australiaeast"
-#       cidrs               = ["10.210.6.0/28"]
-#       resource_group_name = module.ipgroups-resourcegroup.rg_name
-#     }
-#   }
-
-#   # providers = {
-#   #   azurerm = azurerm.connectivity
-#   # }
-# }
 
 ####################################################################################
 #              AZURE IP GROUPS                                               #
@@ -689,7 +667,7 @@ module "vpn_gateway" {
   ip_configuration              = "default"
   private_ip_address_allocation = "Dynamic"
   subnet_id                     = module.hub-vnet.subnet_ids_hub[1]
-  public_ip_address_id          = module.connectivity-public-ips.gateway_public_ip_id
+  public_ip_address_id          = module.connectivity-public-ips.vpn_gateway_public_ip_id
   #   # providers = {
   #   #   azurerm = azurerm.connectivity
   #   # }

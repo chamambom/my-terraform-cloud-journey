@@ -28,9 +28,3 @@ variable "public_ip_address_id" {
   description = "The full Azure resource ID of the remote virtual network."
 }
 
-variable "include_module" {
-  description = "Whether to include the module or not"
-  type        = bool
-  default     = false
-}
-

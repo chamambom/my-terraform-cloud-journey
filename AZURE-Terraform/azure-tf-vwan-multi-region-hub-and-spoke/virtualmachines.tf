@@ -65,7 +65,7 @@ resource "azurerm_windows_virtual_machine" "region2-vm01" {
   name                = "vm02ase"
   depends_on          = [azurerm_key_vault.kv1]
   resource_group_name = azurerm_resource_group.region2-rg1.name
-  location            = var.region2
+  location            = var.region1 # change this to region 2 when you deploy to EQC.
   size                = var.vmsize
   admin_username      = var.adminusername
   admin_password      = azurerm_key_vault_secret.vmpassword.value

@@ -1,25 +1,15 @@
-# Azure Virtual WAN Demo Environment
+# Azure Virtual WAN NonProd Environment
 
 ## Overview
-This is a Terraform based demonstration of Azure Virtual WAN. The environment is designed to provide a simple foundation that you can add additional services (Gateways, Firewalls, etc.) into, allowing the demonstration of concepts and technologies. This lab has two options - with or without Azure Firewall, and is based on a two-region design.  
-
-## What does this Lab deploy?
-
-### Without Azure Firewall:
-
-![Virtual WAN Demo Lab](https://raw.githubusercontent.com/jakewalsh90/Terraform-Azure/main/Virtual-WAN-Demo/images/Virtual-WAN.png?raw=true)
-
-### With Azure Firewall:
-
-![Virtual WAN Demo Lab - with Azure Firewall](https://raw.githubusercontent.com/jakewalsh90/Terraform-Azure/main/Virtual-WAN-Demo/images/Virtual-WAN-with-Firewall.png?raw=true)
+This is a Terraform based demonstration of Azure Virtual WAN with 2 firewalls in two-regions AE and ASE.  
 
 ### What does this Lab Deploy?
 
 This lab deploys the following Resources:
 
-1. A Resource Group in two Azure Regions (based on variables)
-2. A Virtual WAN in the Primary Region
-3. A Virtual WAN Hub in two Azure Regions
+1. A Resource Group in two Azure Regions (AE & ASE) (based on variables)
+2. A Virtual WAN in the Primary Region (AE)
+3. A Virtual WAN Hub in two Azure Regions (AE & ASE)
 4. A vNet in each Azure Region which is connected to the Virtual WAN Hub.
 6. A Subnet and NSG in each of the above vNets.
 7. A Subnet in each Region to be used for Azure Bastion.  

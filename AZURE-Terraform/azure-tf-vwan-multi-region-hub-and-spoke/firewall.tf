@@ -61,13 +61,13 @@ resource "azurerm_firewall_policy_rule_collection_group" "network-rules1" {
 }
 
 # Azure Firewall Policy Rule Collection Group
-resource "azurerm_firewall_policy_rule_collection_group" "network-rules1" {
+resource "azurerm_firewall_policy_rule_collection_group" "network-rules2" {
   count              = var.azfw ? 1 : 0
   name               = "fw-pol02-rules"
   firewall_policy_id = azurerm_firewall_policy.fw-pol02[0].id
   priority           = 100
   network_rule_collection {
-    name     = "network_rules1"
+    name     = "network_rules2"
     priority = 100
     action   = "Allow"
     rule {

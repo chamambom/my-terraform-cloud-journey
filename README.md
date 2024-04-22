@@ -9,9 +9,9 @@
     GitHub:  https://github.com/adamrushuk
     Twitter: @adamrushuk
 
-This repository hosts Terraform code snippets and notes on best practices that I frequently utilize when working with AWS or Azure.
+This repository contains Terraform code snippets and notes on best practices that I often use when working with AWS or Azure.
 
-Background:
+##### Background:
 
 This repository was initiated in 2021 during my tenure (2015-2022) at a Cloud Service Provider (CSP), where I led a team of Cloud Delivery engineers operating remotely across Southern Africa markets - SouthAfrica, DRC, Zimbabwe, Zambia, and Botswana. Our clientele comprised both "Managed cloud customers" and "Unmanaged cloud customers." 
 

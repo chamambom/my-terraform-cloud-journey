@@ -1,6 +1,8 @@
 # My Terraform (AWS/Azure) best practices
 
-#### This repository is inspired by Adam Rush's work, particularly the bootstrapping code required to set up an Azure service principal, storage account, and container for storing Terraform state (further details are provided below). I've customized the code for my own use, refactored certain sections, incorporated Azure & AWS code snippets to reference, and eliminated deprecated code to align with the latest Terraform updates.
+##### This repository is inspired by Adam Rush's work, particularly the bootstrapping code required to set up an Azure service principal, storage account, and container for storing Terraform state (further details are provided below).
+
+##### I've customized the code for my own use, refactored certain sections, incorporated Azure & AWS code snippets to reference, and eliminated deprecated code to align with the latest Terraform updates.
 
     Author:  Adam Rush
     Blog:    https://adamrushuk.github.io
